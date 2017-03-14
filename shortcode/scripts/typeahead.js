@@ -1790,7 +1790,7 @@ var countries = new Bloodhound({
   prefetch: {
     // url points to a json file that contains an array of country names, see
     // https://github.com/twitter/typeahead.js/blob/gh-pages/data/countries.json
-    url: '/scripts/countries.json',
+    url: '/wp-content/plugins/neyrinck-custom-forms/shortcode/scripts/countries.json',
     // the json file contains an array of strings, but the Bloodhound
     // suggestion engine expects JavaScript objects so this converts all of
     // those strings
