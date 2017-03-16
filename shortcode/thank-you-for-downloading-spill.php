@@ -405,7 +405,7 @@ if (!$_POST['submit'] || $errors > 0) {
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
 <script src='https://www.google.com/recaptcha/api.js'></script>
-<script src='/wp-content/plugins/neyrinck-custom-forms/shortcode/scripts/typeahead.js'></script>
+<script src='/wp-content/plugins/neyrinck_custom_forms/shortcode/scripts/typeahead.js'></script>
 
 <?php 
 } ?>
