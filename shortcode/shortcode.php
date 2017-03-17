@@ -12,9 +12,9 @@ add_shortcode('NCF_ECHO_LATEST_VCP_DOWNLOAD_LINKS', 'echo_latest_vcp_download_li
 add_shortcode('NCF_SUPPORT_FORM', 'support_form');
 add_shortcode('NCF_CONTACT_FORM', 'contact_form');
 add_shortcode('NCF_NEWSLETTER_SUBSCRIPTION_FORM', 'newsletter_subscription_form');
-add_shortcode('NCF_ONLINE_ACTIVATION', 'online_activation_form');
+add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
 
-function online_activation_form(){
+function neyrinck_online_activation_form(){
     include('directdeposit.php');
 }
 
