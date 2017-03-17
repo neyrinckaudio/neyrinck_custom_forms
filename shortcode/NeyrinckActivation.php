@@ -6,7 +6,7 @@ class NeyrinckActivation {
     public $USERNAME = $database->db_user;
     public $PASSWORD = $database->db_password;
     public $SERVERNAME = $database->db_server;
-    public $DATABASE = $database->db_db_database
+    public $DATABASE = $database->db_db_database;
 
     public $ENVIRONMENT;
    
