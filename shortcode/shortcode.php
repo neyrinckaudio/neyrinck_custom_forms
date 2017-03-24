@@ -6,6 +6,21 @@
 // error_reporting(E_ALL);
 
 
+// database connection
+$admin = new Neyrinck_Custom_Forms_Admin();
+$database = $admin->get_settings();
+$user = $database->db_user;
+$password = $database->db_password;
+$db = $database->db_name;
+$server = $database->db_server;
+
+$GLOBALS['ncf_database'] = $db;
+$GLOBALS['ncf_user'] = $user;
+$GLOBALS['ncf_password'] = $password;
+$GLOBALS['ncf_server'] = $server;
+
+
+
 add_shortcode('NCF_PRODUCT_DOWNLOAD_FORM', 'product_download_form');
 add_shortcode('NCF_THANK_YOU_FOR_DOWNLOADING_SPILL', 'thank_you_for_downloading_spill');
 add_shortcode('NCF_ECHO_LATEST_VCP_DOWNLOAD_LINKS', 'echo_latest_vcp_download_links');
@@ -15,7 +30,9 @@ add_shortcode('NCF_NEWSLETTER_SUBSCRIPTION_FORM', 'newsletter_subscription_form'
 add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
 
 function neyrinck_online_activation_form(){
+	
     include('directdeposit.php');
+
 }
 
 

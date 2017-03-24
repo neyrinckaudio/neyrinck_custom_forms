@@ -7,11 +7,6 @@
  */
 
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
-
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
     die;

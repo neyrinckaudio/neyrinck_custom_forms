@@ -10,20 +10,12 @@ class iLokDeposit {
     public $iLok_id;
     public $status;
     public $error_message;
-   
-    $admin = new Neyrinck_Custom_Forms_Admin();
-    $database = $admin->get_settings();
-    public $USERNAME = $database->db_user;
-    public $PASSWORD = $database->db_password;
-    public $SERVERNAME = $database->db_server;
-
         
 
-	public function __construct($unique_order_id, $product_id, $iLok_id, $database) {
+	public function __construct($unique_order_id, $product_id, $iLok_id) {
         $this->unique_order_id = $unique_order_id;
         $this->product_id= $product_id;
         $this->iLok_id = $iLok_id;
-        $this->DATABASE = $database;
         $this->check_ilok_id($iLok_id);
     }
 
@@ -70,36 +62,13 @@ class iLokDeposit {
 
     }
 
-    // function handle_deposit($client, $drightGuidObj,$sessionId, $iLok_id, $unique_order_id){
-
-    //         // determine if a deposit has actually succeeded 
-    //         $deposits = $client->findUserDepositsByOrderNumber($sessionId, $iLok_id, $unique_order_id);
-    //         if(count($deposits)> 0){
-    //             $result = "<br/>S U C C E S S ";
-    //             $result .= "<br/>";
-    //             $result .= $sessionId;
-    //             $result .= "<br/>";
-    //             $result .= $iLok_id;
-    //             $result .= "<br/>";
-    //             $result .= $unique_order_id;
-    //         } else $result = "<br/>F A I L E D ";
-
-    //         // get $result and $drightGuid from the include above
-    //         // add $drightGuid to the subscription
-    //         $drightGuid = $drightGuidObj->depositedDrights[0]->drightGuid;
-    //         if ($drightGuid){
-    //             $this->status = 'deposited';
-    //             $this->update_license_ref($drightGuid, $unique_order_id);
-    //         } else {
-    //             $result .= "ERROR...drightGuid NOT FOUND....";
-    //             $this->status = 'failed';
-    //         }
-    //         email($result ." :: ".$drightGuid); 
-    // }
-
     function update_license_ref($license_ref, $activation_code){
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-    
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "UPDATE ilok_assets SET license_ref = '$license_ref' WHERE activation_code ='$activation_code'";
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_ilok_license_type");
 
@@ -158,8 +127,12 @@ class iLokDeposit {
 
 
     function get_iLok_product_guid($product_id){
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-    
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "SELECT product_guid FROM ilok_products WHERE product_id = '$product_id'";
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_ilok_license_type");
         if ($row = mysqli_fetch_array($result)) {
@@ -170,8 +143,12 @@ class iLokDeposit {
 	}
 
     function get_iLok_surrender_guid($product_id){
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "SELECT surrender_guid FROM ilok_products WHERE product_id = '$product_id'";
 
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_iLok_surrender_guid");
@@ -182,8 +159,12 @@ class iLokDeposit {
     }
 
     function get_iLok_sku_guid($product_id){
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "SELECT sku_guid FROM ilok_products WHERE product_id = '$product_id'";
 
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_iLok_sku_guid");
@@ -196,8 +177,12 @@ class iLokDeposit {
 
     function get_ilok_license_type($product_id){
 
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-    
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "SELECT license_type FROM ilok_products WHERE product_id = '$product_id'";
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_ilok_license_type");
         if ($row = mysqli_fetch_array($result)) {
@@ -209,8 +194,12 @@ class iLokDeposit {
 
     function get_iLok_terms_guid($product_id){
 
-        $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldnt connect to server");
-    
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        // Check connection
+        if (mysqli_connect_errno())
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        } 
         $query = "SELECT terms_guid FROM ilok_products WHERE product_id = '$product_id'";
         $result = mysqli_query($connection, $query)or die("Couldnt execute query get_ilok_license_type");
         if ($row = mysqli_fetch_array($result)) {

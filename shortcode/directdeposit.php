@@ -1,20 +1,7 @@
 <?php
-// ini_set('error_reporting', E_ALL|E_STRICT);
-// ini_set('display_errors', 1);
-//  error_reporting(0);
-
  
 include_once('NeyrinckActivation.php');
 
-
- // SET ENVIRONMENT
-$TEST = false;
-if (isset($_GET['test']) && $_GET['test'] == true )$TEST = true;
-
-if ($TEST == true){
-	echo "<h1 style='margin-top: 20px'>***THIS IS A TEST*** </h1>";
-	$NeyrinckActivation->setTestEnvironment();
-} 
 
 $step1=true;
 $showILockRedeemInstruction = false;
@@ -152,8 +139,8 @@ if ((empty($_POST['first_submit']) && $step1) || ((!empty($_POST['first_submit']
 <?php
 // *******  Message Div   *********//
 if ($showError) {
-	if ($step1) echo $step1_result['msg'];
-	if ($step2) echo $step2_result['msg'];
+	if ($step1) echo "<p style='padding-top: 50px;'>".$step1_result['msg']."</p>";
+	if ($step2) echo "<p style='padding-top: 50px;'>". $step2_result['msg']."</p>";
 	// reset
 	$showError = false;
 }
@@ -164,7 +151,7 @@ if ($showError) {
 if ($showRegistrationForm) {
 	?>
 	
-	<p>Please fill in the registration information below. This will complete both your product registration and activation. It is very important that you enter a valid e-mail address so you can be notified when product updates are available.</p>
+	<p style="padding-top: 50px;">Please fill in the registration information below. This will complete both your product registration and activation. It is very important that you enter a valid e-mail address so you can be notified when product updates are available.</p>
 	<div class='form'>
 	<form name="activate_second" id="activate_second" method="post" action="">
 	    <table border="0" cellspacing="0" cellpadding="0">
@@ -250,7 +237,7 @@ if ($showRegistrationForm) {
 
 	</form>
 	</div>
-	<script src="/wp-content/plugins/neyrinck_custom_forms/shortcode/scripts/directdeposit.js"></script>
+	<script src="/scripts/activation/directdeposit.js"></script>
 	<?php 
 		// reset
 		$showRegistrationForm = false;
@@ -259,7 +246,7 @@ if ($showRegistrationForm) {
 <?php 
 // ************* Instruction to Redeem iLok License *************//
 if ($showILockRedeemInstruction){ 	?>
-	<p>The license has been deposited to you iLok.com account. Please use the iLok License Manager to transfer the license to your iLok USB key/machine.</p>
+	<p style="padding-top: 50px;">The license has been deposited to you iLok.com account. Please use the iLok License Manager to transfer the license to your iLok USB key/machine.</p>
 	<p>Please contact <a href='mailto:support@neyrinck.com'>support@neyrinck.com</a> if you need any help.</p>
 	<?php 
 		// reset

@@ -9,7 +9,6 @@ require_once "scripts/recaptchalib.php";
 include('scripts/softwareInformation.php');
 
 
-
 // Get software list
 $softwarePacks = $NeyrinckSoftware->packages[$downloadProduct];
 
@@ -101,18 +100,27 @@ if ($_POST['submit'] != '') {
     $country = trim($_POST['country']);
 
     // Save to database
-    $query="INSERT INTO ekl_software_downloads
+    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+    // Check connection
+    if (mysqli_connect_errno())
+    {
+      echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    } 
+
+    $query="INSERT INTO main.ekl_software_downloads
       (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
       ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
-    $result = mysql_query($query) or die ("Error in query: $query. ".mysql_error());
-
+    
+     $result = mysql_query($connection, $query) or die ("Error in query: $query. ".mysql_error());
 
     // Update customer table if email is new
-    $query="SELECT * FROM customers WHERE customers_email_address ='".$email."'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) == 0) {
-    $query="INSERT INTO `customers` (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
-    $result = mysql_query($query) or die ("Error in query: $query. ".mysql_error());
+    $query="SELECT * FROM main.customers WHERE customers_email_address ='".$email."'";
+    $result = mysqli_query($connection, $query);
+    if (mysqli_num_rows($result) == 0) {
+    $query="INSERT INTO `main.customers` (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
+    $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysql_error());
+
+    mysqli_close($connection);
 
     }
 

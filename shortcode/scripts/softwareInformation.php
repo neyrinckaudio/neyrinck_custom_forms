@@ -10,7 +10,7 @@ class NeyrinckSoftware {
 		$db = $database->db_database;
 		$server = $database->db_server;
 
-		$connection = mysqli_connect($server, $user, $password, $db);
+		$connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
 
 		
 		if ($connection->connect_error) {
@@ -18,12 +18,10 @@ class NeyrinckSoftware {
 		            . $connection->connect_error);
 		}
 
-	
-		$query = "SELECT * FROM software_downloads";
+		$query = "SELECT * FROM main.software_downloads";
 		$result = mysqli_query($connection, $query);
 		while ($row = mysqli_fetch_assoc($result) ) {
 			$this->records[] = $row;
-			
 		}
 		
 		

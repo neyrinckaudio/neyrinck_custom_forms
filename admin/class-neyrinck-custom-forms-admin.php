@@ -41,7 +41,8 @@
 				    $password = $settings->db_password;
 				    $database = $settings->db_name;
 
-				    $message = 'Settings successfully updated.';
+				    if ($settings) $message = 'Settings successfully updated.';
+				    else $message = 'Error saving information.';
 
 		    } 
 
@@ -83,16 +84,24 @@
 
 		    global $wpdb;
 		    $table_name = $wpdb->prefix . 'ncf_settings';
-		    $results = $wpdb->get_results( "SELECT * FROM ".$table_name);
+		    $sql = "SELECT * FROM ".$table_name;
+		    $results = $wpdb->get_results( $sql);
 		    return $results[0];
 
 		}
 
 		private function set_settings($data){
 
-			print_r($data);
+			// check to see if row exist
+			if (!$this->get_settings()) $this->doInsertSettings($data);
+				else $this->doUpdateSettings($data);
 
-		    global $wpdb;
+		}
+
+
+		private function doUpdateSettings($data){
+
+			global $wpdb;
 		    $table_name = $wpdb->prefix . 'ncf_settings';
 		    $wpdb->update( $table_name, 
 		    	array(
@@ -105,9 +114,23 @@
 		    	array('id'=>1)
 
 		    );
-		    // $results = $wpdb->get_results( "SELECT * FROM ".$table_name);
-		    // return $results;
 
+		}
+
+		private function doInsertSettings($data){
+
+			global $wpdb;
+		    $table_name = $wpdb->prefix . 'ncf_settings';
+		    $wpdb->insert( $table_name, 
+		    	array(
+		    	      'db_server' => $data['db_server'],
+		    	      'db_name' => $data['db_name'],
+		    	      'db_user' => $data['db_user'],
+		    	      'db_password' => $data['db_password'],
+
+		    	)
+		    );
+			
 		}
 
 
