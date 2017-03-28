@@ -105,20 +105,27 @@ if ($_POST['submit'] != '') {
     if (mysqli_connect_errno())
     {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    } 
+    }  
 
     $query="INSERT INTO main.ekl_software_downloads
       (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
       ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
     
-     $result = mysql_query($connection, $query) or die ("Error in query: $query. ".mysql_error());
+     $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
+
+
+     if ( false===$result ) {
+        printf("error: %s\n", mysqli_error($connection));
+      }
 
     // Update customer table if email is new
     $query="SELECT * FROM main.customers WHERE customers_email_address ='".$email."'";
     $result = mysqli_query($connection, $query);
     if (mysqli_num_rows($result) == 0) {
     $query="INSERT INTO `main.customers` (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
-    $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysql_error());
+     $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
+
+      mysqli_close($connection);
 
     mysqli_close($connection);
 
