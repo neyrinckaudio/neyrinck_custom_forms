@@ -18,7 +18,7 @@ if ($_POST['submit'] != '') {
   // your secret key
   $secret = "6LfiXuISAAAAAKQqhDHJXfU80Lsa45RPs86uYhym";
   // empty response
-  $response = null; 
+  $response = null;
   // check secret key
   $reCaptcha = new ReCaptcha($secret);
 
@@ -43,7 +43,7 @@ if ($_POST['submit'] != '') {
 
   }
 
-  // software 
+  // software
   if ($_POST['software'] == '') {
     $errors[]= "Please specify an Software download.";
     echo "<input type='hidden' id='submit_software_status' value='error'/>";
@@ -83,7 +83,7 @@ if ($_POST['submit'] != '') {
       echo "<input type='hidden' id='submit_country_status' value='error'/>";
     }
 
-  //make sure that any data coming from user input is escaped 
+  //make sure that any data coming from user input is escaped
   if(is_array($_POST)){
     foreach ($_POST as $index=>$value){
       if (!is_array($value)) $$index = escapeshellcmd($value);
@@ -105,12 +105,12 @@ if ($_POST['submit'] != '') {
     if (mysqli_connect_errno())
     {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }  
+    }
 
     $query="INSERT INTO main.ekl_software_downloads
       (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
       ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
-    
+
      $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
 
 
@@ -122,7 +122,7 @@ if ($_POST['submit'] != '') {
     $query="SELECT * FROM main.customers WHERE customers_email_address ='".$email."'";
     $result = mysqli_query($connection, $query);
     if (mysqli_num_rows($result) == 0) {
-    $query="INSERT INTO `main.customers` (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
+    $query="INSERT INTO main.customers (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
      $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
 
       mysqli_close($connection);
@@ -143,7 +143,7 @@ if ($_POST['submit'] != '') {
       echo "<iframe style='border:0' width=0 height=0 src=https://neyrinck.com/download/download.php?file=".urlencode($file)."></iframe>";
     }
 
-    
+
   }
 }
 
@@ -213,7 +213,7 @@ if (!$_POST['submit'] || $errors > 0) {
 <td colspan='2'>
 <div style='padding: 0em 0em; width: 27em; margin: 0 auto;' id="code"></div>
 <div style='padding: 2em 0em; width: 27em; margin: 0 auto;' class="g-recaptcha" data-sitekey="6LfiXuISAAAAALP4gpHG-9yuN_xc1X0IN3AIuxpI"></div></td>
-</tr> 
+</tr>
 
 <tr>
 <td colspan='2'>
@@ -232,8 +232,8 @@ if (!$_POST['submit'] || $errors > 0) {
 </table>
 </form>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <script src='/wp-content/plugins/neyrinck-custom-forms/shortcode/scripts/typeahead.js'></script>
-<?php } 
+<?php }
 ?>
