@@ -23,6 +23,7 @@ $GLOBALS['ncf_server'] = $server;
 
 add_shortcode('NCF_PRODUCT_DOWNLOAD_FORM', 'product_download_form');
 add_shortcode('NCF_THANK_YOU_FOR_DOWNLOADING_SPILL', 'thank_you_for_downloading_spill');
+add_shortcode('NCF_THANK_YOU_FOR_DOWNLOADING_VCP', 'thank_you_for_downloading_vcp');
 add_shortcode('NCF_ECHO_LATEST_VCP_DOWNLOAD_LINKS', 'echo_latest_vcp_download_links');
 add_shortcode('NCF_SUPPORT_FORM', 'support_form');
 add_shortcode('NCF_CONTACT_FORM', 'contact_form');
@@ -96,6 +97,16 @@ function product_download_form($atts){
 function thank_you_for_downloading_spill(){
 	ob_start();
 	include('scripts/sms_spill.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+
+	return $form;
+}
+
+function thank_you_for_downloading_vcp(){
+	ob_start();
+	include('scripts/sms_vcp.php');
 	$form = ob_get_contents();
 	ob_clean();
 	ob_end_flush();
