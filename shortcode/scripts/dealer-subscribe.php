@@ -28,14 +28,16 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Send')) {
   }
   else {
     $sendy_url = 'http://news.neyrinck.com';
-    $list = 'QPNUeUJfZDvhBs5RXGQlXQ'; //'svZVgoz7YigSU0pOuuTOgw';
+    $list = 'svZVgoz7YigSU0pOuuTOgw';
     $name = $_POST['dealername'];
     $email = $_POST['email'];
+    $company = $_POST['company'];
 
     //subscribe
     $postdata = http_build_query(
         array(
         'name' => $name,
+        'CompanyName' => $company,
         'email' => $email,
         'list' => $list,
         'boolean' => 'true'
@@ -69,6 +71,9 @@ if (!isset($_POST['submit']) || count($errors) > 0) {
 <form method="POST" accept-charset="utf-8">
 	<label for="name">Name</label><br/>
 	<input type="text" name="dealername" id="name"/>
+	<br/>
+  <label for="company">Company</label><br/>
+	<input type="text" name="company" id="company"/>
 	<br/>
 	<label for="email">Email</label><br/>
 	<input type="email" name="email" id="email"/>
