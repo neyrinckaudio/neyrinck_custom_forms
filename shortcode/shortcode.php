@@ -28,13 +28,23 @@ add_shortcode('NCF_SUPPORT_FORM', 'support_form');
 add_shortcode('NCF_CONTACT_FORM', 'contact_form');
 add_shortcode('NCF_NEWSLETTER_SUBSCRIPTION_FORM', 'newsletter_subscription_form');
 add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
+add_shortcode('NCF_DEALERNEWS_SUBSCRIPTION_FORM', 'dealernews_subscription_form');
 
 function neyrinck_online_activation_form(){
-	
+
     include('directdeposit.php');
 
 }
 
+
+function dealernews_subscription_form(){
+	ob_start();
+	include('scripts/dealer-subscribe.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+	return $form;
+}
 
 function newsletter_subscription_form(){
 
