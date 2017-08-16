@@ -4,4 +4,5 @@
 //$GLOBALS['ncf_user'] = "root";
 //$GLOBALS['ncf_password'] = "28hr37YS2";
 //$GLOBALS['ncf_database'] = "test1";
+//$downloadProduct = "V-Control Pro";
 ?>

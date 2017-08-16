@@ -2,9 +2,10 @@
 // ini_set('display_startup_errors',1);
 // ini_set('display_errors',1);
 // error_reporting(-1);
+
 error_reporting(1);
 
-// grab recaptcha library
+include('scripts/database.php');
 require_once "scripts/recaptchalib.php";
 include('scripts/softwareInformation.php');
 
@@ -13,10 +14,11 @@ include('scripts/softwareInformation.php');
 $softwarePacks = $NeyrinckSoftware->packages[$downloadProduct];
 
 
-if ($_POST['submit'] != '') {
+if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
 
   // your secret key
-  $secret = "6LfiXuISAAAAAKQqhDHJXfU80Lsa45RPs86uYhym";
+  $secret = "6Lfs3iwUAAAAAJnS_gt1luIY-EnOTZpViD19tO3H";
+
   // empty response
   $response = null;
   // check secret key
@@ -76,7 +78,6 @@ if ($_POST['submit'] != '') {
 
   }
 
-
   // country
     if ($_POST['country'] == '') {
       $errors[]= "Country required.";
@@ -97,6 +98,9 @@ if ($_POST['submit'] != '') {
     $organization =  trim($_POST['organization']);
     $email =  trim($_POST['email']);
     $newsletter = $_POST['newsletter'];
+    if (!$newsletter){
+      $newsletter = 0;
+    }
     $country = trim($_POST['country']);
 
     // Save to database
@@ -105,45 +109,63 @@ if ($_POST['submit'] != '') {
     if (mysqli_connect_errno())
     {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
+      echo "<BR>";
     }
 
-    $query="INSERT INTO main.ekl_software_downloads
-      (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
+    $query="INSERT INTO ekl_software_downloads
+     (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
       ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
 
      $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
-
 
      if ( false===$result ) {
         printf("error: %s\n", mysqli_error($connection));
       }
 
     // Update customer table if email is new
-    $query="SELECT * FROM main.customers WHERE customers_email_address ='".$email."'";
+    $query="SELECT * FROM customers WHERE customers_email_address ='".$email."'";
     $result = mysqli_query($connection, $query);
     if (mysqli_num_rows($result) == 0) {
-    $query="INSERT INTO main.customers (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
-     $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
-
+      $query="INSERT INTO customers (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
+      $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
       mysqli_close($connection);
-
-    mysqli_close($connection);
-
     }
+    // subscribe to newsletter
+    if ($newsletter)
+    {
+      echo "SUBSCRIBING<br>";
+      $sendy_url = 'http://news.neyrinck.com';
+      $list = 'BfkRKWbN9a82ETTCoriB1g';
+      $name = $firstname." ".$lastname;
+      $company = $organization;
 
-
+      //subscribe
+      $postdata = http_build_query(
+          array(
+          'name' => $name,
+          'CompanyName' => $company,
+          'Country' => $country,
+          'email' => $email,
+          'list' => $list,
+          'boolean' => 'true'
+          )
+      );
+      $opts = array('http' => array('method'  => 'POST', 'header'  => 'Content-type: application/x-www-form-urlencoded', 'content' => $postdata));
+      $context  = stream_context_create($opts);
+      $result = file_get_contents($sendy_url.'/subscribe', false, $context);
+    }
+    else {
+      echo "not sunscribing<br>";
+    }
     // Launch Download
     $file = $NeyrinckSoftware->downloads[$software];
 
     if (strpos($file,'https') !== false) {
-        echo "<div class='success'><br /><a style='text-size:1.3em; font-weight:bold' href=$file>Click here if your download does not start.</a></div>";
+      echo "<div class='success'><br /><a style='text-size:1.3em; font-weight:bold' href=$file>Click here if your download does not start.</a></div>";
       echo "<iframe style='border:0' width=0 height=0 src=$file></iframe>";
     } else {
-      echo "<div class='success'><br /><a style='text-size:1.3em; font-weight:bold' href='https://neyrinck.com/download/".$file."'>Click here if your download does not start.</a></div>";
-      echo "<iframe style='border:0' width=0 height=0 src=https://neyrinck.com/download/download.php?file=".urlencode($file)."></iframe>";
+      echo "<div>Download Error - Please contact neyrinck.com/support</div>";
     }
-
-
   }
 }
 
@@ -151,11 +173,7 @@ if (count($errors) > 0) {
   echo "<input type='hidden' id='submit_status' value='error'/>";
 }
 
-
-
-
-if (!$_POST['submit'] || $errors > 0) {
-
+if (!$_POST['submit'] || count($errors) > 0) {
 ?>
 <div class='mobileDevice'>Downloads are not available from a mobile device.</div>
 <div class='download_form form'>
@@ -212,7 +230,7 @@ if (!$_POST['submit'] || $errors > 0) {
 <tr>
 <td colspan='2'>
 <div style='padding: 0em 0em; width: 27em; margin: 0 auto;' id="code"></div>
-<div style='padding: 2em 0em; width: 27em; margin: 0 auto;' class="g-recaptcha" data-sitekey="6LfiXuISAAAAALP4gpHG-9yuN_xc1X0IN3AIuxpI"></div></td>
+<div style='padding: 2em 0em; width: 27em; margin: 0 auto;' class="g-recaptcha" data-sitekey="6Lfs3iwUAAAAAFD4SlDM7akXAh0MTKrEkEubo4eC"></div></td>
 </tr>
 
 <tr>
@@ -234,6 +252,6 @@ if (!$_POST['submit'] || $errors > 0) {
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
-<script src='/wp-content/plugins/neyrinck-custom-forms/shortcode/scripts/typeahead.js'></script>
+<script src='scripts/typeahead.js'></script>
 <?php }
 ?>
