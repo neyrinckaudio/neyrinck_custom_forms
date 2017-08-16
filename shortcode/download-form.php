@@ -159,6 +159,22 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
     }
     // Launch Download
     $file = $NeyrinckSoftware->downloads[$software];
+    if ($downloadProduct == "Spill")
+    {
+      $thankyou_url = site_url()."/downloads/spill/thank-you-for-dowloading-spill/?software=$file";
+      // do a redirect to Thank you page and download
+      // Thank you Page include a php script : thankyou_download.php
+      header("Location: $thankyou_url");
+      die();
+    }
+    if ($downloadProduct == "V-Control Pro")
+    {
+      $thankyou_url = site_url()."/downloads/v-control-pro/thank-you-for-dowloading-vcp/?software=$file";
+      // do a redirect to Thank you page and download
+      // Thank you Page include a php script : thankyou_download.php
+      header("Location: $thankyou_url");
+      die();
+    }
 
     if (strpos($file,'https') !== false) {
       echo "<div class='success'><br /><a style='text-size:1.3em; font-weight:bold' href=$file>Click here if your download does not start.</a></div>";

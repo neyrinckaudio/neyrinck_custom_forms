@@ -87,14 +87,7 @@ function product_download_form($atts){
 	$product = $atts['product'];
 	$downloadProduct =  $product;
 	ob_start();
-	switch ($product){
-		case "Spill":
-			include('download-redirect-thank-you-page.php');
-			break;
-		default:
-			include('download-form.php');
-	}
-
+	include('download-form.php');
 	$form = ob_get_contents();
 	ob_clean();
 	ob_end_flush();
