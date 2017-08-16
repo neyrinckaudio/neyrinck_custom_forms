@@ -50,13 +50,12 @@ function dealernews_subscription_form(){
 function newsletter_subscription_form(){
 
 	ob_start();
-	include('subscription_form_reCaptcha.php');
+	include('scripts/subscription_form_reCaptcha.php');
 	$form = ob_get_contents();
 	ob_clean();
 	ob_end_flush();
 
 	return $form;
-
 }
 
 
