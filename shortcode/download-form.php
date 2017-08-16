@@ -133,7 +133,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
     // subscribe to newsletter
     if ($newsletter)
     {
-      echo "SUBSCRIBING<br>";
+// for testing      echo "SUBSCRIBING<br>";
       $sendy_url = 'http://news.neyrinck.com';
       $list = 'BfkRKWbN9a82ETTCoriB1g';
       $name = $firstname." ".$lastname;
@@ -155,7 +155,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
       $result = file_get_contents($sendy_url.'/subscribe', false, $context);
     }
     else {
-      echo "not sunscribing<br>";
+// for testing      echo "not subscribing<br>";
     }
     // Launch Download
     $file = $NeyrinckSoftware->downloads[$software];
