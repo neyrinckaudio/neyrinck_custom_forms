@@ -65,7 +65,7 @@ if ($_POST['submit'] == 'Send') {
 	if ($phone) {
 
     $CountryCode = $_POST['countryCode'];
-    // varify number
+    // verify number
 
    try {
       // Make a call to the Lookup API
