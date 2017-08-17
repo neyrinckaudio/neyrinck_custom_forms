@@ -24,7 +24,7 @@ if ($_POST['submit'] == 'Send') {
   }
 
   // your secret key
-  $secret = "6LfiXuISAAAAAKQqhDHJXfU80Lsa45RPs86uYhym";
+  $secret = "6Lfs3iwUAAAAAJnS_gt1luIY-EnOTZpViD19tO3H";
   // empty response
   $response = null; 
   // check secret key
@@ -387,7 +387,7 @@ if (!$_POST['submit'] || $errors > 0) {
 <table width="80%" border="0" cellspacing="0" cellpadding="0">
   <tr style='height: 3.5em;'>
     <td colspan="2">
-      <div style='padding: 2em 0em; width: 302px; margin: 0 auto;' class="g-recaptcha" data-sitekey="6LfiXuISAAAAALP4gpHG-9yuN_xc1X0IN3AIuxpI">
+      <div style='padding: 2em 0em; width: 302px; margin: 0 auto;' class="g-recaptcha" data-sitekey="6Lfs3iwUAAAAAFD4SlDM7akXAh0MTKrEkEubo4eC">
     </div>
     </td>
   </tr>
