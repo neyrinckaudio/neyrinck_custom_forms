@@ -9,13 +9,13 @@ require_once "scripts/recaptchalib.php";
 
 
 function ostAPI($data){
-  // key = '2D055CF13150317F74C488582AA1AC17' // Live Site 
+  // key = '2D055CF13150317F74C488582AA1AC17' // Live Site
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
   $config = array(
       'url'=>'http://ost.neyrinck.com/api/http.php/tickets.json',
       'key'=>'2D055CF13150317F74C488582AA1AC17'
     );
-    
+
     #pre-checks
   function_exists('curl_version') or die('CURL support required');
   function_exists('json_encode') or die('JSON support required');
@@ -37,35 +37,35 @@ function ostAPI($data){
   $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
 
-  
+
 
   if ($code != 201)
    die('Unable to create ticket: '.$result);
 
   $ticket_id = (int) $result;
   return $ticket_id;
-    
+
 }
 
 function sendTestEmail($body){
-    $to="berniceling@yahoo.com"; 
+    $to="berniceling@yahoo.com";
     $headers = "From: Neyrinck<postmaster@neyrinck.com>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
     // $headers .= "Bcc: bernice@rejamm.com\r\n";
     // $headers .= "Reply-To: $email\r\n";
     $subject = "TEST";
-    
-    
-    mail($to,$subject,$body,$headers); 
+
+
+    mail($to,$subject,$body,$headers);
 }
 
 if ($_POST['submit'] == 'Send') {
-  
+
   // your secret key
   $secret = "6Lfs3iwUAAAAAJnS_gt1luIY-EnOTZpViD19tO3H";
   // empty response
-  $response = null; 
+  $response = null;
   // check secret key
   $reCaptcha = new ReCaptcha($secret);
 
@@ -89,8 +89,8 @@ if ($_POST['submit'] == 'Send') {
     echo "<input type='hidden' id='submit_security_code_status' value='error'/>";
 
   }
-  
-  
+
+
   $ignore[] = 'submit';
   // $ignore[] = 'code';
   $ignore[] = 'message';
@@ -108,16 +108,16 @@ if ($_POST['submit'] == 'Send') {
   if ($email != $email2){
     $errors[]="Your email address does not match.";
     echo "<input type='hidden' id='submit_email_match_status' value='error'/>";
-  } 
+  }
 
 
-  
-  if (is_array($_POST)) { 
+
+  if (is_array($_POST)) {
 
     if ($email != $email2){
       $errors[]="Your email address does not match.";
       echo "<input type='hidden' id='submit_email_match_status' value='error'/>";
-    } 
+    }
     foreach ($_POST as  $index=>$value) {
       if ($index == 'email') {
         if(!preg_match("/^[a-z0-9]+([_\\.-][a-z0-9]+)*" ."@"."([a-z0-9]+([\.-][a-z0-9]+)*)+"."\\.[a-z]{2,}"."$/i",$value)){
@@ -133,7 +133,7 @@ if ($_POST['submit'] == 'Send') {
         } else {
           $$index = $value;
         }
-        
+
       } else if (!in_array($index, $ignore)) {
         if (($value == '')) {
           $errors[]="Your $index value was invalid";
@@ -145,8 +145,8 @@ if ($_POST['submit'] == 'Send') {
         } else {
           $$index = escapeshellcmd($value);
         }
-      }   
-    } 
+      }
+    }
   }
 
 
@@ -165,7 +165,7 @@ if ($_POST['submit'] == 'Send') {
       'subject' => "$subject",
       'message' => "$msg",
       'ip' => $_SERVER['REMOTE_ADDR'],
-      
+
     );
 
     $ticket_id = ostAPI($data);
@@ -175,26 +175,26 @@ if ($_POST['submit'] == 'Send') {
 
     // $to="berniceling@yahoo.com";
     $to="support@neyrinck.com";
-    
-    
+
+
     $headers = "From: Neyrinck<postmaster@neyrinck.com>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
     $headers .= "Bcc: berniceling@neyrinck.com\r\n";
     $headers .= "Reply-To: $email\r\n";
-    
+
     $body = "<html><body> User Name : $firstname $lastname<br />Request Date : ".date("Y-m-d h:i:s A")."<br />E-Mail : <a href='mailto:$email'>$email</a><br />Product Name : $product<br />";
 
-    if ($product == 'V-Control Pro') $body .= 'DAW : '.$DAW.'<br />'; 
+    if ($product == 'V-Control Pro') $body .= 'DAW : '.$DAW.'<br />';
 
-    $body .=" OS : $os - $mac $win<br />Message : ".nl2br($message)."</body></html>"; 
-    
+    $body .=" OS : $os - $mac $win<br />Message : ".nl2br($message)."</body></html>";
+
     //echo $body;
-    
-    mail($to,$subject,$body,$headers); 
+
+    mail($to,$subject,$body,$headers);
     echo "<div class='success'>Your request has been sent. Thank you.</div>";
-  
-  } 
+
+  }
 }
 
 if (count($errors) > 0) {
@@ -204,11 +204,12 @@ if (count($errors) > 0) {
   //   echo "<li>".$error."</li>";
   // }
   // echo "</ul></div>";
-  
-} 
+
+}
 
 if (!$_POST['submit'] || $errors > 0) {
 ?>
+
 
 <div class='support_form form'>
 <form method="post" enctype="multipart/form-data" name="supportForm" id="supportForm">
@@ -245,7 +246,7 @@ if (!$_POST['submit'] || $errors > 0) {
   <div class="styled-select">
     <select name="software"  class="product" value="<?php echo $_POST['software']; ?>">
       <option value=''>&nbsp; &#9662;  Select an option</option>
-      <?php 
+      <?php
         $products[] = 'Spill';
         $products[] = 'SoundCode For Dolby E Bundle';
         $products[] = 'SoundCode For Dolby E Encoder';
@@ -263,7 +264,7 @@ if (!$_POST['submit'] || $errors > 0) {
           echo "    <option value='$prod'";
         if (html_entity_decode($_POST['software']) == $prod) {
           echo " selected='selected'";
-        } 
+        }
         echo ">$prod</option>\n";
         }
       ?>
@@ -296,7 +297,7 @@ if (!$_POST['submit'] || $errors > 0) {
           echo "    <option value='$D'";
           if (html_entity_decode($_POST['DAW']) == $D) {
           echo " selected='selected'";
-          } 
+          }
           echo ">$D</option>\n";
         }
       ?>
@@ -312,19 +313,19 @@ if (!$_POST['submit'] || $errors > 0) {
    <div class="styled-select">
     <select name="os" id="os">
        <option value="" select="selected">&nbsp; &#9662;  Select an option</option>
-       <?php 
+       <?php
         $OS[] = "Mac";
         $OS[] = "Win";
         foreach ($OS as $D) {
           echo "    <option value='$D'";
           if (html_entity_decode($_POST['os']) == $D) {
           echo " selected='selected'";
-          } 
+          }
           echo ">$D</option>\n";
         }
 
        ?>
-      
+
     </select>
    </div>
 </td>
@@ -344,12 +345,14 @@ if (!$_POST['submit'] || $errors > 0) {
         $macOS[] = "10.8 Mountain Lion";
         $macOS[] = "10.9 Mavericks";
         $macOS[] = "10.10 Yosemite";
-        
+        $macOS[] = "10.11 El Capitan";
+        $macOS[] = "10.12 Sierra";
+
         foreach ($macOS as $M) {
           echo "    <option value='$M'";
           if (html_entity_decode($_POST['mac']) == $M) {
             echo " selected='selected'";
-          } 
+          }
           echo ">$M</option>\n";
         }
       ?>
@@ -373,12 +376,12 @@ if (!$_POST['submit'] || $errors > 0) {
         $winOS[] = "Windows 7";
         $winOS[] = "Windows 8";
         $winOS[] = "Windows 10";
-        
+
         foreach ($winOS as $W) {
           echo "    <option value='$W'";
           if (html_entity_decode($_POST['win']) == $W) {
             echo " selected='selected'";
-          } 
+          }
           echo ">$W</option>\n";
         }
       ?>
@@ -414,9 +417,13 @@ if (!$_POST['submit'] || $errors > 0) {
 </table>
 </form>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+
+<!--table>
+  <tr>E-mail support request undergoing maintenance. Please send an e-mail to support at neyrinck dot com</tr>
+</table-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <script src='/wp-content/plugins/neyrinck-custom-forms/shortcode/scripts/typeahead.js'></script>
 
-<?php 
+<?php
 } ?>
