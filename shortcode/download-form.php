@@ -110,6 +110,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
     {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
       echo "<BR>";
+      die();
     }
 
     $query="INSERT INTO ekl_software_downloads
@@ -133,7 +134,6 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
     // subscribe to newsletter
     if ($newsletter)
     {
-// for testing      echo "SUBSCRIBING<br>";
       $sendy_url = 'http://news.neyrinck.com';
       $list = 'BfkRKWbN9a82ETTCoriB1g';
       $name = $firstname." ".$lastname;
@@ -153,18 +153,22 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
       $opts = array('http' => array('method'  => 'POST', 'header'  => 'Content-type: application/x-www-form-urlencoded', 'content' => $postdata));
       $context  = stream_context_create($opts);
       $result = file_get_contents($sendy_url.'/subscribe', false, $context);
+
     }
     else {
 // for testing      echo "not subscribing<br>";
     }
     // Launch Download
     $file = $NeyrinckSoftware->downloads[$software];
+    /*
     if ($downloadProduct == "Spill")
     {
       $thankyou_url = site_url()."/downloads/spill/thank-you-for-dowloading-spill/?software=$file";
       // do a redirect to Thank you page and download
       // Thank you Page include a php script : thankyou_download.php
-      header("Location: $thankyou_url");
+      ob_start();
+      header("Location: ".$thankyou_url);
+      ob_end_flush();
       die();
     }
     if ($downloadProduct == "V-Control Pro")
@@ -172,9 +176,12 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
       $thankyou_url = site_url()."/downloads/v-control-pro/thank-you-for-dowloading-vcp/?software=$file";
       // do a redirect to Thank you page and download
       // Thank you Page include a php script : thankyou_download.php
-      header("Location: $thankyou_url");
+      ob_start();
+      header("Location: ".$thankyou_url);
+      ob_end_flush();
       die();
     }
+    */
 
     if (strpos($file,'https') !== false) {
       echo "<div class='success'><br /><a style='text-size:1.3em; font-weight:bold' href=$file>Click here if your download does not start.</a></div>";
