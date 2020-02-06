@@ -3,10 +3,7 @@
 
 // grab  libraries
 require_once "scripts/recaptchalib.php";
-require_once "scripts/vendor/autoload.php";
-require_once "scripts/twilio-php-master/Twilio/autoload.php";
-
-
+require "scripts/twilio-php-master/Twilio/autoload.php";
 
 use Twilio\Rest\Client;
 use Twilio\Rest\Lookups;
@@ -21,9 +18,9 @@ if ($_POST['submit'] == 'Send') {
   }
 
   // your secret key
-  $secret = "6LfiXuISAAAAAKQqhDHJXfU80Lsa45RPs86uYhym";
+  $secret = "6Lfs3iwUAAAAAJnS_gt1luIY-EnOTZpViD19tO3H";
   // empty response
-  $response = null; 
+  $response = null;
   // check secret key
   $reCaptcha = new ReCaptcha($secret);
 
@@ -48,24 +45,29 @@ if ($_POST['submit'] == 'Send') {
     $errors[]= "reCaptcha Error";
 
   }
-  
-  
+
+
   $sid = 'ACa252a42d49d8ee2dff1cdc9e179e6992';
   $token = 'd45cb74706133951ae76f73f11451ab8';
-  
+
 	if ($phone) {
 
     $CountryCode = $_POST['countryCode'];
-    // varify number
-    $lookups_client = new Lookups_Services_Twilio($sid, $token);
-   
+
+
    try {
+     // verify number
       // Make a call to the Lookup API
-      $number = $lookups_client->phone_numbers->get($phone, array("CountryCode" => $CountryCode));
-      // Print the E.164 format
-      $E164 = $number->phone_number;
+      $lookups_client = new Client($sid, $token);
+      $number = $lookups_client->lookups
+          ->phoneNumbers($phone)
+          ->fetch(
+              array("CountryCode" => $CountryCode)
+          );
+                // Print the E.164 format
+      $E164 = $number->phoneNumber;
       $client2 = new Client($sid, $token);
-    
+
       $client2->messages->create(
           // the number you'd like to send the message to
           $E164,
@@ -73,7 +75,7 @@ if ($_POST['submit'] == 'Send') {
               // A Twilio phone number you purchased at twilio.com/console
               'from' => '+14152126219',
               // the body of the text message you'd like to send
-              'body' => "https://itunes.apple.com/us/app/v-plugin/id1155577312"
+              'body' => "Neyrinck's V-PlugIn is free at the App Store. https://itunes.apple.com/us/app/v-plugin/id1155577312"
           )
       );
 
@@ -82,28 +84,27 @@ if ($_POST['submit'] == 'Send') {
       header('Location: '.$url);
       ob_end_flush();
       die();
-    
+
     } catch (Exception $e) {
 
-        email ($e);
         echo "<p style='font-weight:bold; color : red'>The phone number you entered is either invalid or not a mobile number.<br/>Please enter a valid mobile phone number and check that the Country Code is correct.</p>";
 
         $errors[]= "phone number Error";
-    } 
+    }
 	}
 
 }
 
 if (count($errors) > 0) {
-  echo "<input type='hidden' id='submit_status' value='error'/>"; 
-} 
+  echo "<input type='hidden' id='submit_status' value='error'/>";
+}
 
 if (!$_POST['submit'] || $errors > 0) {
 ?>
 
 
 
-
+<h3>TEST</h3>
 <div class='support_form form' style='width: 100%'>
 <form method="post" enctype="multipart/form-data" name="phoneForm" id="phoneForm">
 
@@ -114,7 +115,7 @@ if (!$_POST['submit'] || $errors > 0) {
 <p style='font-weight: bold; font-size:1.2em;  padding:20px; margin-left: 20px; margin-right: 20px; '>Take control of Spill with the V-PlugIn app for iPhone and iPad.</p>
 <p>Enter your phone number below and we will message an App Store link to you for V-Plugin on your iPhone and iPad. V-Plugin is a <b>free</b> download</p>
  <div style='padding: 2em; margin-left: 10px'>
- 
+
     <label style='display: inline-block; vertical-align: middle;'>Country Code: </label><select name="countryCode" id="" style='display: inline-block; vertical-align: middle; margin-left: 10px;'>
           <option value="US" Selected>United States</option>
           <optgroup label="Other countries">
@@ -369,7 +370,7 @@ if (!$_POST['submit'] || $errors > 0) {
             <option value="ZW">Zimbabwe</option>
           </optgroup>
     </select>
-  
+
       <p>Enter your phone number: <input type="tel" name="phone" value="<?php echo $phone; ?>" /></p>
       <p style='font-size: 0.9em'>We will not save your phone number and send any other messages to you.</p>
   </div>
@@ -384,7 +385,7 @@ if (!$_POST['submit'] || $errors > 0) {
 <table width="80%" border="0" cellspacing="0" cellpadding="0">
   <tr style='height: 3.5em;'>
     <td colspan="2">
-      <div style='padding: 2em 0em; width: 302px; margin: 0 auto;' class="g-recaptcha" data-sitekey="6LfiXuISAAAAALP4gpHG-9yuN_xc1X0IN3AIuxpI">
+      <div style='padding: 2em 0em; width: 302px; margin: 0 auto;' class="g-recaptcha" data-sitekey="6Lfs3iwUAAAAAFD4SlDM7akXAh0MTKrEkEubo4eC">
     </div>
     </td>
   </tr>
@@ -403,9 +404,9 @@ if (!$_POST['submit'] || $errors > 0) {
 </table>
 </form>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <script src='/wp-content/plugins/neyrinck_custom_forms/shortcode/scripts/typeahead.js'></script>
 
-<?php 
+<?php
 } ?>
