@@ -5,7 +5,7 @@ function doEden($functionName, $data)
     $data_string = json_encode($data);
     
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, "https://test.neyrinck.com/$functionName");
+    curl_setopt($curl, CURLOPT_URL, "https://edenproxy.neyrinck.com/$functionName");
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($curl, CURLOPT_VERBOSE, true);
