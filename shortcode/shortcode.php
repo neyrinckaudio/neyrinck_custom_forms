@@ -30,6 +30,7 @@ add_shortcode('NCF_CONTACT_FORM', 'contact_form');
 add_shortcode('NCF_NEWSLETTER_SUBSCRIPTION_FORM', 'newsletter_subscription_form');
 add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
 add_shortcode('NCF_DEALERNEWS_SUBSCRIPTION_FORM', 'dealernews_subscription_form');
+add_shortcode('NCF_TEST_EDEN_PROXY', 'test_eden_proxy');
 
 function neyrinck_online_activation_form(){
 
@@ -128,7 +129,13 @@ function echo_latest_vcp_download_links(){
 
 }
 
-
-
+function test_eden_proxy(){
+	ob_start();
+	include('scripts/test-eden-proxy.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+	return $form;
+}
 
 ?>
