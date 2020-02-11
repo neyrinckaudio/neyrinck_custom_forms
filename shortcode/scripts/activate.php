@@ -1,23 +1,64 @@
 <?php
 include_once('dbFunctions.php');
 include_once('ilokFunctions.php');
+$debug = true;
+function sendEmail($product_name, $first_name, $last_name, $email1, $activation_code, $ilok_id, $company, $licenseRef)
+{
+    $subject = "Neyrinck $product_name Activation";
+    $to = "store@neyrinck.com";
+   
+    
+    $headers = "From: Neyrinck <store@neyrinck.com>" . "\r\n";
+   // $headers .= 'Bcc: berniceling@neyrinck.com' . "\r\n";
+    $headers .= "Reply-To: $first_name $last_name<$email1>" . "\r\n";
+
+    $mail_cont = "Name: $first_name $last_name\r\nActivation Code: $activation_code\r\nLicense Reference: $licenseRef\r\niLok ID: $ilok_id\r\nCompany: $company\r\nEmail: $email1\r\n";
+
+    $mail_cont .= "\n\nDear $first_name,\n\nWe have processed activation code $activation_code and delivered a $product_name iLok license to User ID $ilok_id.";
+    
+    $mail_cont .= " The latest version of $product_name can be downloaded here:\n\n";
+    $mail_cont .= "http://www.neyrinck.com/downloads\n\n";
+    $mail_cont .= "Thank you for purchasing $product_name.\n\nSincerely,\nPaul Neyrinck";
+
+    // mail to store@neyrinck.com
+    mail($to, $subject, $mail_cont, $headers);
+
+    // mail to customer
+    $to = "$first_name $last_name<$email1>";
+    $headers = "From: Neyrinck <store@neyrinck.com>" . "\r\n";
+    //$headers .= 'Bcc: bernice@rejamm.com' . "\r\n";
+    $headers .= "Reply-To: Neyrinck<store@neyrinck.com>" . "\r\n";
+    mail($to, $subject, $mail_cont, $headers);
+}
 
 if (isset($_POST['submitActivationCode']) && !empty($_POST['item_activation_code']))
 {
-    // retrieve activation info
-    $result = getActivationInfo($_POST['item_activation_code']);
-    $ilok_user_id = $result["ilok_user_id"];
-    if ($result["success"] == true)
+    try 
     {
+        // retrieve activation info
+        $result = getActivationInfo($_POST['item_activation_code']);
+        if ($result['date_manufactured'] == '0000-00-00') {
+            throw new Exception("Activation Error 1:  Please contact Neyrinck at <a href='mailto:support@neyrinck.com'>support@neyrinck.com</a. and report this error.");
+        }
+        if ($result['frozen'] == '1') {
+            throw new Exception("Activation Error 2:  Please contact Neyrinck at <a href='mailto:support@neyrinck.com'>support@neyrinck.com</a> and report this error.");
+        }
+        if ($result['success'] == false) {
+            throw new Exception("Activation Code Not Found");
+        }
+        if ($result["registration_id"] != '0') {
+            throw new Exception("License already registered.");
+        }
+        $ilok_user_id = $result["ilok_user_id"];
         $activation_code = $_POST['item_activation_code'];
         include_once('activationPageInfo.php');
         include_once('activationSubmitRegistrationForm.php');
     }
-    else
+    catch  (Exception $e)
     {
         include_once('activationPageInfo.php');
         include_once('activationSubmitCodeForm.php');
-        $errorMsg = $result["msg"];
+        $errorMsg = $e->getMessage();
         include_once('activationError.php');
     }
 }
@@ -68,41 +109,55 @@ else if (isset($_POST['submitActivationRegistration']))
             {
                 throw new Exception("getActivationInfo failed.");
             }
-            $ilok_user_id = $result["ilok_user_id"];
             $ilok_product_id = $result["ilok_product_id"];
+            $ilok_asset_id = $result["ilok_asset_id"];
             $result = getProductInfo($ilok_product_id);
             if ($result['success'] != true)
             {
                 throw new Exception("getProductInfo failed.");
             }
+            $product_name = $result['product_name'];
             $product_guid = $result['product_guid'];
             $license_type = $result['license_type'];
-            $dright_guid = "error";
+            $product_id = $result["product_id"];
+            $licenseRef = "error";
             if ($license_type == 'full')
             { 
                 $drightGuidArray = depositFullLicense($product_guid, $ilok_user_id, $activation_code);
                 // $drightGuidArray is null if it failed
-                if (drightGuidArray) {
-                    $depositedDrights = $drightGuidArray['depositedDrights'];
-                    $depositedDright = $depositedDrights[0];
-                    $dright_guid = $depositedDright['drightGuid'];
-                    updateLicenseRef($dright_guid, $activation_code);
-                } else {
+                    if (!drightGuidArray) {
                     throw new Exception("depositFullLicense failed.");
                 }
-
             }
-            if ($license_type == 'upgrade')
+            else if ($license_type == 'upgrade')
             {
                // $this->deposit_license_by_SKU($this->product_id, $this->iLok_id, $this->unique_order_id);
             }
-            if ($license_type == 'rental')
+            else if ($license_type == 'rental')
             {
                // $this->deposit_license_with_terms($this->product_id, $this->iLok_id, $this->unique_order_id);
             }
-    
+            else
+            {
+                throw new Exception("error: License type not handled.");
+            }
+            
+            $depositedDrights = $drightGuidArray['depositedDrights'];
+            $depositedDright = $depositedDrights[0];
+            $licenseRef = $depositedDright['drightGuid'];
+            updateLicenseRef($licenseRef, $activation_code);
+            $result = getCustomer($email1);
+            if ($result['success'] == false)
+            {
+                addCustomer($first_name, $last_name, $email1, $company, $ilok_user_id);
+                $result = getCustomer($email1);
+            }
+            $customers_id = $result['customers_id'];
+            $registration_id = addProductRegistration($product_id, $customers_id);
+            updateActivationInfo($ilok_asset_id, $registration_id, $ilok_user_id);
+            sendEmail($product_name, $first_name, $last_name, $email1, $activation_code, $ilok_user_id, $company, $licenseRef);
             include_once('activationSuccess.php');
-            echo "<p>License Reference: $dright_guid</p>";
+            echo "<p>License Reference: $licenseRef</p>";
         }
     }
     catch (Exception $e) {

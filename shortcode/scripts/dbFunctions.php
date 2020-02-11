@@ -16,7 +16,7 @@ function getConnection()
 function getActivationInfo($activation_code)
 {
     $result = array(
-        "success" => true
+        "success" => false
     );
     $connection = getConnection();
     if (!$connection)
@@ -28,36 +28,17 @@ function getActivationInfo($activation_code)
     $query = "SELECT ilok_asset_id, registration_id, ilok_product_id, ilok_user_id, ilok_license_code, date_manufactured FROM main.ilok_assets WHERE activation_code = '$activation_code'";
     $count_query = mysqli_query($connection, $query) or die("Couldnt execute query");
     $check = mysqli_fetch_array($count_query);
-    $date_manufactured = $check['date_manufactured'];
-   
-    if ($date_manufactured == '0000-00-00') {
-        $result["success"] = false;
-        $result["msg"] = "Activation Error 1:  Please contact Neyrinck at <a href='mailto:support@neyrinck.com'>support@neyrinck.com</a. and report this error.";
-        return $result;
-    }
-    if ($check['frozen'] == '1') {
-        $result["success"] = false;
-        $result["msg"] = "Activation Error 2:  Please contact Neyrinck at <a href='mailto:support@neyrinck.com'>support@neyrinck.com</a> and report this error.";
-        return $result;
-    }
-    if (!$check) {
-        $result["success"] = false;
-        $result["msg"] = "Activation Code Not Found";
-        return $result;
-    }
-    $result["activation_code"] = $activation_code;
+    if ($check)
+    {
+        $result["ilok_asset_id"] = $check['ilok_asset_id'];
+        $result["activation_code"] = $activation_code;
     $result["ilok_user_id"] = $check['ilok_user_id'];
     $result["ilok_product_id"] = $check['ilok_product_id'];
     $result["registration_id"] = $check['registration_id'];
-    if ($result["registration_id"] != '0') {
-        $result["success"] = false;
-        $result["activated"] = "activated";
-        $result["msg"] = "$activation_code is already registered and activated. The license has been deposited to you iLok.com account. Please use the iLok License Manager to transfer the license to your iLok USB key/machine.</p><p>Please contact <a href='mailto:support@neyrinck.com'> support@neyrinck.com</a> if you need more help.";
-        $result["ilok_license_code"] = $check['ilok_license_code'];
-        return $result;
-    }
-    $result["date"] = date('Y-m-d');
+    $result["frozen"] = $check['frozen'];
+    $result["date_manufactured"] = $check['date_manufactured'];
     $result["success"] = true;
+    }
     return $result;
 }
 
@@ -81,7 +62,7 @@ function getProductInfo($ilok_product_id)
         $result["success"] = true;
         $result["license_type"] = $ilok_product['license_type'];
         $result["product_id"] = $ilok_product['product_id'];
-        $result["name"] = $ilok_product["name"];
+        $result["product_name"] = $ilok_product["name"];
         $result["product_guid"] = $ilok_product["product_guid"];
         $result["terms_guid"] = $ilok_product["terms_guid"];
         $result["surrender_guid"] = $ilok_product["surrender_guid"];
@@ -102,6 +83,94 @@ function updateLicenseRef($license_ref, $activation_code){
     }
     $query = "UPDATE ilok_assets SET license_ref = '$license_ref' WHERE activation_code ='$activation_code'";
     $qresult = mysqli_query($connection, $query)or die("Couldnt execute query updateLicenseRef");
+}
+
+function updateActivationInfo($ilok_asset_id, $registration_id, $ilok_id)
+{
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    // modify iLok asset ID to have registration id
+    $sql = "UPDATE main.ilok_assets SET registration_id = '$registration_id', ilok_user_id = '$ilok_id' where ilok_asset_id = '$ilok_asset_id'";
+    //echo "$sql\n";
+    $sql_result = mysqli_query($connection, $sql) or die("Error:  could not modify ilok asset");
+}
+
+function addProductRegistration($product_id, $customers_id)
+{
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    // add registration record
+    $datetime = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO main.products_registrations (product_id, customers_id, registration_type, registration_datetime) VALUES ('$product_id', '$customers_id', 'netauth', '$datetime')";
+    // echo "$sql\n";
+    $sql_result = mysqli_query($connection, $sql ) or die("Error:  could not add product registration");
+    $registration_id = mysqli_insert_id($connection);
+    return $registration_id;
+}
+
+function getCustomer($email1)
+{
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    $query = "SELECT customers_id, customers_lastname, customers_firstname FROM main.customers WHERE customers_email_address = '$email1'";
+    $cust_query = mysqli_query($connection, $query) or die("Couldnt execute query 2");
+    $customer = mysqli_fetch_array($cust_query);
+    if ($customer)
+    {
+    $result["success"] = true;
+    $result["customers_id"] = $customer["customers_id"];
+    $result["customers_lastname"] = $customer["customers_lastname"];
+    $result["customers_firstname"] = $customer["customers_firstname"];
+    }
+    return $result;
+}
+
+function addCustomer($first_name, $last_name, $email1, $company, $ilok_id)
+{
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    $sql = "INSERT INTO main.customers (customers_firstname, customers_lastname, customers_email_address, organization, ilok_id) VALUES ('$first_name', '$last_name', '$email1', '$company', '$ilok_id')";
+    $sql_result = mysqli_query($connection, $sql);
+    
+    if(!$sql_result){
+        $result["success"] = false;
+        $result["msg"] = "Error:  The e-mail address $email1 is already in use by a user with a different last name.  Please use a different e-mail address.";
+        return $result;
+    }
+    $result["success"] = true;
+    return $result;
 }
 
 function doActivation($ilok_id, $activation_code, $first_name, $last_name, $company, $address1, $address2, $city, $state, $postal_code, $country, $email1, $email2) {
