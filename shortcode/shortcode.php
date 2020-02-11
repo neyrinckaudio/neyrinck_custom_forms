@@ -32,6 +32,16 @@ add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
 add_shortcode('NCF_ONLINE_ACTIVATION2', 'neyrinck_online_activation_form2');
 add_shortcode('NCF_DEALERNEWS_SUBSCRIPTION_FORM', 'dealernews_subscription_form');
 add_shortcode('NCF_TEST_EDEN_PROXY', 'test_eden_proxy');
+add_shortcode('NCF_VCP_TRIAL', 'neyrinck_vcp_trial_form');
+
+function neyrinck_vcp_trial_form(){
+	ob_start();
+	include('scripts/vcptrial.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+	return $form;
+}
 
 function neyrinck_online_activation_form(){
 

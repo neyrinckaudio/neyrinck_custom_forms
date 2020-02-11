@@ -41,4 +41,12 @@ function depositFullLicense($product_guid, $accountId, $unique_order_id)
     return $jsonResult;
 }
 
+function findUserLicenseBySKU($sku, $accountId)
+{
+    $data = array("sku"=>$sku, "accountId" => $accountId, "accessKeyStr" => "FQKoGGpkMU9QTHpTcWRlODVsZXNOdUp1ZXc9PRwVAqUAFQIVApnzEETBWA55jdnuD6KGr2qW7IoAAA==");                                                                    
+    $result = doEden('findUserLicenseBySku', $data);
+    $jsonResult = json_decode($result, TRUE);
+    return $jsonResult;
+}
+
 ?>
