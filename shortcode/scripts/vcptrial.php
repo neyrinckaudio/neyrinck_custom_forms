@@ -63,7 +63,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
     $score = $response->score;
     //... The Captcha is valid you can continue with the rest of your code
     //... Add code to filter access using $response . score
-    if ($response->success==true && $response->score <= 0.5) {
+    if ($response->success==true && $response->score < 0.3) {
         
         echo "Google captcha3 believes this is spam. score = $score<br>";
         die();
@@ -105,6 +105,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
 
         echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
+        echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
         //include_once('vcpTrialSubmitRegistrationForm.php');
         }
     }
