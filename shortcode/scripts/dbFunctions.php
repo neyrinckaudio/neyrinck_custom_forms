@@ -1,18 +1,31 @@
 <?php
+$dbconnection = NULL;
+function getConnection()
+{
+    if ($dbconnection == NULL)
+    {
+        $dbconnection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        if (mysqli_connect_errno())
+        {
+            $dbconnection = NULL;
+            return $dbconnection;
+        }
+    }
+    return $dbconnection;
+}
 function getActivationInfo($activation_code)
 {
     $result = array(
         "success" => true
     );
-    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
-    // Check connection   
-    if (mysqli_connect_errno())
+    $connection = getConnection();
+    if (!$connection)
     {
         $result["success"] = false;
         $result["msg"] = "Database Error: " . mysqli_connect_error();
         return $result;
-    } 
-    $query = "select ilok_license_code, ilok_user_id, registration_id, date_manufactured, frozen from main.ilok_assets where activation_code = '$activation_code'";
+    }
+    $query = "SELECT ilok_asset_id, registration_id, ilok_product_id, ilok_user_id, ilok_license_code, date_manufactured FROM main.ilok_assets WHERE activation_code = '$activation_code'";
     $count_query = mysqli_query($connection, $query) or die("Couldnt execute query");
     $check = mysqli_fetch_array($count_query);
     $date_manufactured = $check['date_manufactured'];
@@ -34,6 +47,7 @@ function getActivationInfo($activation_code)
     }
     $result["activation_code"] = $activation_code;
     $result["ilok_user_id"] = $check['ilok_user_id'];
+    $result["ilok_product_id"] = $check['ilok_product_id'];
     $result["registration_id"] = $check['registration_id'];
     if ($result["registration_id"] != '0') {
         $result["success"] = false;
@@ -45,6 +59,49 @@ function getActivationInfo($activation_code)
     $result["date"] = date('Y-m-d');
     $result["success"] = true;
     return $result;
+}
+
+function getProductInfo($ilok_product_id)
+{
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    $query = "SELECT license_type, product_id, name, product_guid, terms_guid, surrender_guid FROM main.ilok_products WHERE ilok_product_id = '$ilok_product_id'";
+    $product_query = mysqli_query($connection, $query ) or die("Couldnt execute query 3");
+    $ilok_product = mysqli_fetch_array($product_query);
+    if ($ilok_product)
+    {
+        $result["success"] = true;
+        $result["license_type"] = $ilok_product['license_type'];
+        $result["product_id"] = $ilok_product['product_id'];
+        $result["name"] = $ilok_product["name"];
+        $result["product_guid"] = $ilok_product["product_guid"];
+        $result["terms_guid"] = $ilok_product["terms_guid"];
+        $result["surrender_guid"] = $ilok_product["surrender_guid"];
+    }
+    return $result;
+}
+
+function updateLicenseRef($license_ref, $activation_code){
+    $result = array(
+        "success" => false
+    );
+    $connection = getConnection();
+    if (!$connection)
+    {
+        $result["success"] = false;
+        $result["msg"] = "Database Error: " . mysqli_connect_error();
+        return $result;
+    }
+    $query = "UPDATE ilok_assets SET license_ref = '$license_ref' WHERE activation_code ='$activation_code'";
+    $qresult = mysqli_query($connection, $query)or die("Couldnt execute query updateLicenseRef");
 }
 
 function doActivation($ilok_id, $activation_code, $first_name, $last_name, $company, $address1, $address2, $city, $state, $postal_code, $country, $email1, $email2) {
