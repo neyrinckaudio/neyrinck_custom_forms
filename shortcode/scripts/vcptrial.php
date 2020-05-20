@@ -102,7 +102,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             $depositedDrights = $drightGuidArray['depositedDrights'];
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
-
+        echo "<script>ga('send', 'event', 'vcptrial', 'deposit', 'Trial License Deposit Success');</script>";
         echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
         echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
@@ -113,6 +113,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
     {
         $errorMsg = $e->getMessage();
         echo "$errorMsg";
+        echo "<script>ga('send', 'event', 'vcptrial', 'submiterror', 'Trial License Deposit Error');</script>";
         include_once('vcpTrialSubmitAccountForm.php');
         
     }
