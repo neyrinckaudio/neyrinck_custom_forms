@@ -3,7 +3,7 @@ class NeyrinckSoftware {
 
 	function NeyrinckSoftware() {
 
-		$connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+		$connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
 
 
 		if ($connection->connect_error) {

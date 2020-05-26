@@ -4,7 +4,7 @@ function getConnection()
 {
     if ($dbconnection == NULL)
     {
-        $dbconnection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $dbconnection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         if (mysqli_connect_errno())
         {
             $dbconnection = NULL;
@@ -179,7 +179,7 @@ function doActivation($ilok_id, $activation_code, $first_name, $last_name, $comp
         "success" => true
     );
 
-    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
     // Check connection
     if (mysqli_connect_errno())
     {

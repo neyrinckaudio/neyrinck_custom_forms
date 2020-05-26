@@ -102,7 +102,7 @@ if ($_POST['submit'] != '') {
     $country = trim($_POST['country']);
 
     // Save to database
-    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+    $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
     // Check connection
     if (mysqli_connect_errno())
     {

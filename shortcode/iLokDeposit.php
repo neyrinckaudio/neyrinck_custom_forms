@@ -63,7 +63,7 @@ class iLokDeposit {
     }
 
     function update_license_ref($license_ref, $activation_code){
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -127,7 +127,7 @@ class iLokDeposit {
 
 
     function get_iLok_product_guid($product_id){
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -143,7 +143,7 @@ class iLokDeposit {
 	}
 
     function get_iLok_surrender_guid($product_id){
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -159,7 +159,7 @@ class iLokDeposit {
     }
 
     function get_iLok_sku_guid($product_id){
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -177,7 +177,7 @@ class iLokDeposit {
 
     function get_ilok_license_type($product_id){
 
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -194,7 +194,7 @@ class iLokDeposit {
 
     function get_iLok_terms_guid($product_id){
 
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {

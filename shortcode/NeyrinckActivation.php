@@ -7,7 +7,7 @@ class NeyrinckActivation {
         
         // $connection = mysqli_connect($this->SERVERNAME, $this->USERNAME, $this->PASSWORD,$this->DATABASE) or die("Couldn't connect to server");
 
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -22,7 +22,7 @@ class NeyrinckActivation {
     }
 
     function FirstStep($activation_code) {
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
@@ -80,7 +80,7 @@ class NeyrinckActivation {
             "success" => true
         );
 
-        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database']);
+        $connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
         // Check connection
         if (mysqli_connect_errno())
         {
