@@ -4,8 +4,6 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
-
-
 // database connection
 $admin = new Neyrinck_Custom_Forms_Admin();
 $database = $admin->get_settings();
@@ -19,6 +17,8 @@ $GLOBALS['ncf_user'] = $user;
 $GLOBALS['ncf_password'] = $password;
 $GLOBALS['ncf_server'] = $server;
 
+//require_once IC_PLUGIN_DIR .'/shortcode/scripts/dbFunctions.php' ;
+//require_once IC_PLUGIN_DIR .'/shortcode/scripts/ilokFunctions.php' ;
 
 
 add_shortcode('NCF_PRODUCT_DOWNLOAD_FORM', 'product_download_form');
@@ -29,10 +29,20 @@ add_shortcode('NCF_SUPPORT_FORM', 'support_form');
 add_shortcode('NCF_CONTACT_FORM', 'contact_form');
 add_shortcode('NCF_NEWSLETTER_SUBSCRIPTION_FORM', 'newsletter_subscription_form');
 add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
-add_shortcode('NCF_ONLINE_ACTIVATION2', 'neyrinck_online_activation_form2');
+//add_shortcode('NCF_ONLINE_ACTIVATION2', 'neyrinck_online_activation_form2');
 add_shortcode('NCF_DEALERNEWS_SUBSCRIPTION_FORM', 'dealernews_subscription_form');
-add_shortcode('NCF_TEST_EDEN_PROXY', 'test_eden_proxy');
-add_shortcode('NCF_VCP_TRIAL', 'neyrinck_vcp_trial_form');
+//add_shortcode('NCF_TEST_EDEN_PROXY', 'test_eden_proxy');
+add_shortcode('NCF_VCP_TRIAL', 'neyrinck_vcp_trial_form_offline');
+add_shortcode('NCF_VCP_TRIAL_DEV', 'neyrinck_vcp_trial_form');
+
+function neyrinck_vcp_trial_form_offline(){
+	ob_start();
+	include('offline.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+	return $form;
+}
 
 function neyrinck_vcp_trial_form(){
 	ob_start();
@@ -44,11 +54,14 @@ function neyrinck_vcp_trial_form(){
 }
 
 function neyrinck_online_activation_form(){
-
-    include('directdeposit.php');
-
+	ob_start();
+	include('directdeposit.php');
+	$form = ob_get_contents();
+	ob_clean();
+	ob_end_flush();
+	return $form;
 }
-
+/*
 function neyrinck_online_activation_form2(){
 	ob_start();
 	include('scripts/activate.php');
@@ -57,7 +70,7 @@ function neyrinck_online_activation_form2(){
 	ob_end_flush();
 	return $form;
 }
-
+*/
 
 function dealernews_subscription_form(){
 	ob_start();
@@ -147,15 +160,6 @@ function echo_latest_vcp_download_links(){
 	return $form;
 
 
-}
-
-function test_eden_proxy(){
-	ob_start();
-	include('scripts/test-eden-proxy.php');
-	$form = ob_get_contents();
-	ob_clean();
-	ob_end_flush();
-	return $form;
 }
 
 ?>
