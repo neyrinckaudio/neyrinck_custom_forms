@@ -5,9 +5,11 @@
 
 error_reporting(1);
 
-include('scripts/database.php');
-require_once "scripts/recaptchalib.php";
-include('scripts/softwareInformation.php');
+include( plugin_dir_path( __FILE__ ) . 'scripts/database.php');
+//include('./scripts/database.php');
+require_once "./scripts/recaptchalib.php";
+include( plugin_dir_path( __FILE__ ) . 'scripts/softwareInformation.php');
+//include('./scripts/softwareInformation.php');
 
 
 // Get software list
