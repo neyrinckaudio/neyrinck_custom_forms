@@ -17,10 +17,6 @@ $GLOBALS['ncf_user'] = $user;
 $GLOBALS['ncf_password'] = $password;
 $GLOBALS['ncf_server'] = $server;
 
-//require_once IC_PLUGIN_DIR .'/shortcode/scripts/dbFunctions.php' ;
-//require_once IC_PLUGIN_DIR .'/shortcode/scripts/ilokFunctions.php' ;
-
-
 add_shortcode('NCF_PRODUCT_DOWNLOAD_FORM', 'product_download_form');
 add_shortcode('NCF_THANK_YOU_FOR_DOWNLOADING_SPILL', 'thank_you_for_downloading_spill');
 add_shortcode('NCF_THANK_YOU_FOR_DOWNLOADING_VCP', 'thank_you_for_downloading_vcp');
@@ -32,7 +28,7 @@ add_shortcode('NCF_ONLINE_ACTIVATION', 'neyrinck_online_activation_form');
 //add_shortcode('NCF_ONLINE_ACTIVATION2', 'neyrinck_online_activation_form2');
 add_shortcode('NCF_DEALERNEWS_SUBSCRIPTION_FORM', 'dealernews_subscription_form');
 //add_shortcode('NCF_TEST_EDEN_PROXY', 'test_eden_proxy');
-add_shortcode('NCF_VCP_TRIAL', 'neyrinck_vcp_trial_form_offline');
+add_shortcode('NCF_VCP_TRIAL', 'neyrinck_vcp_trial_form');
 add_shortcode('NCF_VCP_TRIAL_DEV', 'neyrinck_vcp_trial_form');
 
 function neyrinck_vcp_trial_form_offline(){
@@ -46,7 +42,7 @@ function neyrinck_vcp_trial_form_offline(){
 
 function neyrinck_vcp_trial_form(){
 	ob_start();
-	include('scripts/vcptrial.php');
+	include( plugin_dir_path( __FILE__ ) . 'scripts/vcptrial.php');
 	$form = ob_get_contents();
 	ob_clean();
 	ob_end_flush();

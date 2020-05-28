@@ -1,6 +1,13 @@
 <?php
-include_once('dbFunctions.php');
-include_once('ilokFunctions.php');
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include_once( plugin_dir_path( __FILE__ ) . 'dbFunctions.php');
+include_once( plugin_dir_path( __FILE__ ) . '../../includes/class-neyrinck-custom-forms-eden.php');
+
+
 $vcpTrialGUID = "2A666090-6653-11E6-80BB-005056A204F3";
 //Use this site key in the HTML code your site serves to users
 //6LfduNcUAAAAAMCW0-tF_IDCz2gew_xTS1wYW2Mh
@@ -56,7 +63,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
         $response = json_decode($response);
     
         if ($response->success === false) {
-            echo "Google captcha3 error.<br>";
+            echo "<p>The Google captcha3 system has warned that your request might be from a malicious system. Please try again after a few minutes or contact us to help you, weekdays 9 AM to 5 PM PST. Email: support at neyrinck dot com. Facebook @neyrinckaudio.</p>";
             die();
         }
     }
@@ -72,12 +79,14 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
     try 
     {
         $ilok_user_id = $_POST['item_account_id'];
-        $ilokIdTest = findUserByAccountId($ilok_user_id);
+        $eden = new Neyrinck_Custom_Forms_Eden();
+        
+        $ilokIdTest = $eden->findUserByAccountId($ilok_user_id);
         if ($ilokIdTest != $ilok_user_id)
         {
             throw new Exception("iLok User ID is not valid");
         }
-        $licenses = findUserLicenseBySKU($vcpTrialGUID, $ilok_user_id);
+        $licenses = $eden->findUserLicenseBySKU($vcpTrialGUID, $ilok_user_id);
         if (count($licenses) > 0)
         {
             foreach ($licenses as $iter69)
@@ -93,9 +102,10 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
         else
         {
             $orderId = date('Y-m-d H:i:s') . "VCPTRIAL";
-            $drightGuidArray = depositFullLicense($vcpTrialGUID, $ilok_user_id, $orderId);
+            
+            $drightGuidArray = $eden->depositFullLicense($vcpTrialGUID, $ilok_user_id, $orderId);
             // $drightGuidArray is null if it failed
-            if (drightGuidArray == null) {
+            if ($drightGuidArray == null) {
                 throw new Exception("License depost failed.");
             }
 //            echo json_encode($drightGuidArray);
@@ -123,4 +133,5 @@ else
 {
     include_once('vcpTrialSubmitAccountForm.php');
 }
+
 ?>
