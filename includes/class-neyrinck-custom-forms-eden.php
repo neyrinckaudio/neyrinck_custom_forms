@@ -43,6 +43,22 @@ public function depositFullLicense($product_guid, $accountId, $unique_order_id)
     return $jsonResult;
 }
 
+public function depositLicenseWithTerms($product_guid, $accountId, $unique_order_id, $termsGuid)
+{
+    $accountingInfo = array("orderNumber" => $unique_order_id);
+    $item = array("id"  => null, "guid" => $product_guid);
+    $itemsToDeposit[] = $item;
+
+    $predefinedArray = array("licenseTermsGuid"=>$termsGuid);
+    $terms = array("predefined"=>$predefinedArray);
+
+    $data = array("itemsToDeposit" => $itemsToDeposit, "terms" => $terms, "accountingInfo" => $accountingInfo, "accountId" => $accountId, "accessKeyStr" => "FQKoGGpkMU9QTHpTcWRlODVsZXNOdUp1ZXc9PRwVAqUAFQIVApnzEETBWA55jdnuD6KGr2qW7IoAAA==");                                                                    
+    $result = $this->doEden('depositLicensesWithTerms', $data);
+    // !!! Returns an object
+    $jsonResult = json_decode($result, TRUE);
+    return $jsonResult;
+}
+
 public function findUserLicenseBySKU($sku, $accountId)
 {
     $data = array("sku"=>$sku, "accountId" => $accountId, "accessKeyStr" => "FQKoGGpkMU9QTHpTcWRlODVsZXNOdUp1ZXc9PRwVAqUAFQIVApnzEETBWA55jdnuD6KGr2qW7IoAAA==");                                                                    
