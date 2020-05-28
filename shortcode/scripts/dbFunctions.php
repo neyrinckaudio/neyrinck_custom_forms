@@ -13,6 +13,7 @@ function getConnection()
     }
     return $dbconnection;
 }
+
 function getActivationInfo($activation_code)
 {
     $result = array(
@@ -54,7 +55,7 @@ function getProductInfo($ilok_product_id)
         $result["msg"] = "Database Error: " . mysqli_connect_error();
         return $result;
     }
-    $query = "SELECT license_type, product_id, name, product_guid, terms_guid, surrender_guid FROM main.ilok_products WHERE ilok_product_id = '$ilok_product_id'";
+    $query = "SELECT license_type, product_id, name, product_guid, terms_guid, surrender_guid, sku_guid FROM main.ilok_products WHERE ilok_product_id = '$ilok_product_id'";
     $product_query = mysqli_query($connection, $query ) or die("Couldnt execute query 3");
     $ilok_product = mysqli_fetch_array($product_query);
     if ($ilok_product)
@@ -65,6 +66,7 @@ function getProductInfo($ilok_product_id)
         $result["product_name"] = $ilok_product["name"];
         $result["product_guid"] = $ilok_product["product_guid"];
         $result["terms_guid"] = $ilok_product["terms_guid"];
+        $result["sku_guid"] = $ilok_product["sku_guid"];
         $result["surrender_guid"] = $ilok_product["surrender_guid"];
     }
     return $result;

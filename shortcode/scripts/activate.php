@@ -1,6 +1,11 @@
 <?php
-include_once('dbFunctions.php');
-include_once('ilokFunctions.php');
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+
+include_once( plugin_dir_path( __FILE__ ) . 'dbFunctions.php');
+include_once( plugin_dir_path( __FILE__ ) . '../../includes/class-neyrinck-custom-forms-eden.php');
+
 $debug = true;
 function sendEmail($product_name, $first_name, $last_name, $email1, $activation_code, $ilok_id, $company, $licenseRef)
 {
@@ -99,7 +104,9 @@ else if (isset($_POST['submitActivationRegistration']))
         }
         else
         {
-            $ilokIdTest = findUserByAccountId($ilok_user_id);
+            $eden = new Neyrinck_Custom_Forms_Eden();
+
+            $ilokIdTest = $eden->findUserByAccountId($ilok_user_id);
             if ($ilokIdTest != $ilok_user_id)
             {
                 throw new Exception("iLok User ID is not valid");
@@ -107,39 +114,55 @@ else if (isset($_POST['submitActivationRegistration']))
             $result = getActivationInfo($_POST['item_activation_code']);
             if ($result['success'] != true)
             {
-                throw new Exception("getActivationInfo failed.");
+                throw new Exception("Database check failed. Please try again or contact support@neyrinck.com.");
             }
             $ilok_product_id = $result["ilok_product_id"];
             $ilok_asset_id = $result["ilok_asset_id"];
             $result = getProductInfo($ilok_product_id);
             if ($result['success'] != true)
             {
-                throw new Exception("getProductInfo failed.");
+                throw new Exception("Database info failed:getProductInfo failed. Please contact support@neyrinck.com.");
             }
             $product_name = $result['product_name'];
             $product_guid = $result['product_guid'];
             $license_type = $result['license_type'];
-            $product_id = $result["product_id"];
+            $terms_guid = $result["terms_guid"];
+            $sku_guid = $result["sku_guid"];
             $licenseRef = "error";
+            
             if ($license_type == 'full')
             { 
-                $drightGuidArray = depositFullLicense($product_guid, $ilok_user_id, $activation_code);
-                // $drightGuidArray is null if it failed
-                    if (!drightGuidArray) {
-                    throw new Exception("depositFullLicense failed.");
+                if (!$product_guid)
+                {
+                    throw new Exception("Product GUID not found. License deposit failed. Please contact support@neyrinck.com.");
                 }
+                $drightGuidArray = $eden->depositFullLicense($product_guid, $ilok_user_id, $activation_code);
             }
             else if ($license_type == 'upgrade')
             {
+                if (!$sku_guid)
+                {
+                    throw new Exception("SKU GUID not found. License deposit failed. Please contact support@neyrinck.com.");
+                }
+                $drightGuidArray = $eden->depositFullLicense($sku_guid, $ilok_user_id, $activation_code);
                // $this->deposit_license_by_SKU($this->product_id, $this->iLok_id, $this->unique_order_id);
             }
             else if ($license_type == 'rental')
             {
-               // $this->deposit_license_with_terms($this->product_id, $this->iLok_id, $this->unique_order_id);
+                if (!$terms_guid)
+                {
+                    throw new Exception("Terms GUID not found. License deposit failed. Please contact support@neyrinck.com.");
+                }
+                $drightGuidArray = $eden->depositLicenseWithTerms($product_guid, $ilok_user_id, $activation_code, $terms_guid);
             }
             else
             {
-                throw new Exception("error: License type not handled.");
+                throw new Exception("error: License type not handled. Please contact support@neyrinck.com.");
+            }
+            // $drightGuidArray is null if it failed
+            if (!$drightGuidArray)
+            {
+                throw new Exception("License deposit failed. Please try again or contact support@neyrinck.com.");
             }
             
             $depositedDrights = $drightGuidArray['depositedDrights'];
