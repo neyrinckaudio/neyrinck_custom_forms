@@ -70,7 +70,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
     $score = $response->score;
     //... The Captcha is valid you can continue with the rest of your code
     //... Add code to filter access using $response . score
-    if ($response->success==true && $response->score < 0.3) {
+    if ($response->success==true && $response->score < 0.1) {
         
         echo "Google captcha3 believes this is spam. score = $score<br>";
         die();
@@ -112,9 +112,12 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             $depositedDrights = $drightGuidArray['depositedDrights'];
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
+            echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
         echo "<script>ga('send', 'event', 'vcptrial', 'deposit', 'Trial License Deposit Success');</script>";
         echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
+        echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
+        
         echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
         //include_once('vcpTrialSubmitRegistrationForm.php');
         }
