@@ -98,10 +98,13 @@ if ($_POST['submit'] == 'Send') {
   $result = file_get_contents($sendy_url.'/subscribe', false, $context);
   //--------------------------------------------------//
   
-  if ($result = '1'){
+  if ($result = '1')
+  {
     echo "Thank you for subscribing to our newsletter.";
-  } else {
-    echo "There is error subscribing. Please try again later.";
+    echo "<!-- Event snippet for Newsletter Sign-up conversion page --><script>gtag('event', 'conversion', {'send_to': 'AW-817619326/_pvGCP_opucCEP7C74UD'});</script>";
+  } 
+  else {
+    echo "There is an error subscribing. Please try again later.";
   }
 
   
