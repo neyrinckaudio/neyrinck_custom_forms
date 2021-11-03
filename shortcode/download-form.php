@@ -1,13 +1,11 @@
 <?php
-// ini_set('display_startup_errors',1);
-// ini_set('display_errors',1);
-// error_reporting(-1);
-
-error_reporting(1);
+//ini_set('display_startup_errors',1);
+//ini_set('display_errors',1);
+//error_reporting(E_ALL);
 
 include( plugin_dir_path( __FILE__ ) . 'scripts/database.php');
 //include('./scripts/database.php');
-require_once "./scripts/recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 include( plugin_dir_path( __FILE__ ) . 'scripts/softwareInformation.php');
 //include('./scripts/softwareInformation.php');
 

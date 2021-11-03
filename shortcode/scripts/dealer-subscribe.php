@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-require_once "recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."recaptchalib.php";
 $errors = [];
 if (isset($_POST['submit']) && ($_POST['submit'] == 'Send')) {
   // recaptcha secret key

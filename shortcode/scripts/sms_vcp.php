@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 
 // grab  libraries
-require_once "scripts/recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."recaptchalib.php";
 require_once "scripts/twilio-php-master/Twilio/autoload.php";
 use Twilio\Rest\Client;
 use Twilio\Rest\Lookups;
