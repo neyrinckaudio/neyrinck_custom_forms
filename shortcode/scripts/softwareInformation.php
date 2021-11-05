@@ -45,8 +45,6 @@ class NeyrinckSoftware {
 		$this->products['SC-Exchange'][] = 'SoundCode Exchange MXF Import-PT 10.3.5 or later';
 
 		$this->products['V-Mon'][] = 'V-Mon';
-		$this->products['V-Mon'][] = 'V-Mon - AAX DSP 64/32';
-
 
 		$this->products['Dolbly-Digital'][] = 'SoundCode For Dolby Digital 2';
 
