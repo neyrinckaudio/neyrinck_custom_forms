@@ -11,6 +11,7 @@ require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 function ostAPI($data){
   // key = '2D055CF13150317F74C488582AA1AC17' // Live Site
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
+  // key = '46CA9534B96BFFEA659C9169F7872CDD' //test.neyrinck.com
   $config = array(
       'url'=>'http://ost.neyrinck.com/api/http.php/tickets.json',
       'key'=>'2D055CF13150317F74C488582AA1AC17'
@@ -247,17 +248,13 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="software"  class="product" value="<?php echo $_POST['software']; ?>">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
+        $products[] = 'V-Control Pro';
+        $products[] = 'SoundCode LtRt Tools';
         $products[] = 'Spill';
         $products[] = 'SoundCode For Dolby E Bundle';
         $products[] = 'SoundCode For Dolby E Encoder';
         $products[] = 'SoundCode For Dolby E Decoder';
-        $products[] = 'SoundCode Stereo LtRt';
-        $products[] = 'SoundCode LtRt Tools';
-        $products[] = 'SoundCode Exchange MXF Import';
-        $products[] = 'SoundCode Exchange MXF';
         $products[] = 'SoundCode For Dolby Digital';
-        $products[] = 'SoundCode For DTS';
-        $products[] = 'V-Control Pro';
         $products[] = 'V-Mon';
         $products[] = 'Other';
         foreach ($products as $prod) {
@@ -338,15 +335,17 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="mac" id="mac">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
-        $macOS[] = "10.4 Tiger";
-        $macOS[] = "10.5 Leopard";
-        $macOS[] = "10.6 Snow Leopard";
-        $macOS[] = "10.7 Lion";
-        $macOS[] = "10.8 Mountain Lion";
-        $macOS[] = "10.9 Mavericks";
-        $macOS[] = "10.10 Yosemite";
-        $macOS[] = "10.11 El Capitan";
-        $macOS[] = "10.12 Sierra";
+      $macOS[] = "12 Monterey";
+      $macOS[] = "11 Big Sur";
+      $macOS[] = "10.15 Catalina";
+      $macOS[] = "10.14 Mojave";
+      $macOS[] = "10.13 high Sierra";
+      $macOS[] = "10.12 Sierra";
+      $macOS[] = "10.11 El Capitan";
+      $macOS[] = "10.10 Yosemite";
+      $macOS[] = "10.9 Mavericks";
+      $macOS[] = "10.8 Mountain Lion";
+        
 
         foreach ($macOS as $M) {
           echo "    <option value='$M'";
