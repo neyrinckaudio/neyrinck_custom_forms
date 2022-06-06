@@ -9,6 +9,7 @@ include_once( plugin_dir_path( __FILE__ ) . '../../includes/class-neyrinck-custo
 
 
 $vcpTrialGUID = "2A666090-6653-11E6-80BB-005056A204F3";
+$vcpPlusTrialGUID = "FAD35810-E5C7-11EC-BF81-00505692C25A";
 //Use this site key in the HTML code your site serves to users
 //6LfduNcUAAAAAMCW0-tF_IDCz2gew_xTS1wYW2Mh
 
@@ -106,7 +107,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             $drightGuidArray = $eden->depositFullLicense($vcpTrialGUID, $ilok_user_id, $orderId);
             // $drightGuidArray is null if it failed
             if ($drightGuidArray == null) {
-                throw new Exception("License depost failed.");
+                throw new Exception("License deposit failed.");
             }
 //            echo json_encode($drightGuidArray);
             $depositedDrights = $drightGuidArray['depositedDrights'];
@@ -131,7 +132,94 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
         
     }
 }
+else if (isset($_POST['submitPlusAccountId']) && !empty($_POST['item_account_id']))
+{
+    if (isset($_POST['g-recaptcha-response'])) {
+        $captcha = $_POST['g-recaptcha-response'];
+    } else {
+        $captcha = false;
+    }
+    
+    if (!$captcha) {
+        echo "Google captcha3 not detected.<br>";
+        die();
+    } else {
+        $secret   = '6LfduNcUAAAAAMcvZOqItm0PLqH-x3yjMwEtdqXy';
+        $response = file_get_contents(
+            "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
+        );
+        // use json_decode to extract json response
+        $response = json_decode($response);
+    
+        if ($response->success === false) {
+            echo "<p>The Google captcha3 system has warned that your request might be from a malicious system. Please try again after a few minutes or contact us to help you, weekdays 9 AM to 5 PM PST. Email: support at neyrinck dot com. Facebook @neyrinckaudio.</p>";
+            die();
+        }
+    }
+    $score = $response->score;
+    //... The Captcha is valid you can continue with the rest of your code
+    //... Add code to filter access using $response . score
+    if ($response->success==true && $response->score < 0.1) {
+        
+        echo "Google captcha3 believes this is spam. score = $score<br>";
+        die();
+    }
 
+    try 
+    {
+        $ilok_user_id = $_POST['item_account_id'];
+        $eden = new Neyrinck_Custom_Forms_Eden();
+        
+        $ilokIdTest = $eden->findUserByAccountId($ilok_user_id);
+        if ($ilokIdTest != $ilok_user_id)
+        {
+            throw new Exception("iLok User ID is not valid");
+        }
+        $licenses = $eden->findUserLicenseBySKU($vcpPlusTrialGUID, $ilok_user_id);
+        if (count($licenses) > 0)
+        {
+            foreach ($licenses as $iter69)
+            {
+            //echo json_encode($iter69);
+            //echo "<br><br>";
+            }
+            $depositedDright = $licenses[0];
+            $licenseRef = $depositedDright['drightGuid'];
+            echo "The iLok system indicates your iLok account already has a V-Control Pro Plus trial license.<br>";
+            echo "License Reference: $licenseRef<br>";
+        }
+        else
+        {
+            $orderId = date('Y-m-d H:i:s') . "VCPPLUSTRIAL";
+            
+            $drightGuidArray = $eden->depositFullLicense($vcpPlusTrialGUID, $ilok_user_id, $orderId);
+            // $drightGuidArray is null if it failed
+            if ($drightGuidArray == null) {
+                throw new Exception("License deposit failed.");
+            }
+//            echo json_encode($drightGuidArray);
+            $depositedDrights = $drightGuidArray['depositedDrights'];
+            $depositedDright = $depositedDrights[0];
+            $licenseRef = $depositedDright['drightGuid'];
+            echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
+        echo "<script>ga('send', 'event', 'vcptrial', 'deposit', 'Trial License Deposit Success');</script>";
+        echo "A V-Control Pro Plus trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
+        echo "License Reference: $licenseRef<br>";
+        echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
+        
+        echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
+        //include_once('vcpTrialSubmitRegistrationForm.php');
+        }
+    }
+    catch  (Exception $e)
+    {
+        $errorMsg = $e->getMessage();
+        echo "$errorMsg";
+        echo "<script>ga('send', 'event', 'vcptrial', 'submiterror', 'Trial License Deposit Error');</script>";
+        include_once('vcpTrialSubmitAccountForm.php');
+        
+    }
+}
 else
 {
     include_once('vcpTrialSubmitAccountForm.php');
