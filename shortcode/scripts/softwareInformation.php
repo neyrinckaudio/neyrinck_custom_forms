@@ -1,8 +1,6 @@
 <?php
 class NeyrinckSoftware {
-
-	function NeyrinckSoftware() {
-
+	function __construct() {
 		$connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
 
 
