@@ -191,12 +191,13 @@ if (isset($_POST['submit']) && ($_POST['submit'] != '')) {
     }
   }
 }
-
+if (isset($errors))
+{
 if (count($errors) > 0) {
   echo "<input type='hidden' id='submit_status' value='error'/>";
 }
-
-if (!$_POST['submit'] || count($errors) > 0) {
+}
+if (!isset($_POST['submit']) || count($errors) > 0){
 ?>
 <div class='mobileDevice'>Downloads are not available from a mobile device.</div>
 <div class='download_form form'>

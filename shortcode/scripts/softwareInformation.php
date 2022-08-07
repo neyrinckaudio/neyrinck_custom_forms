@@ -97,6 +97,8 @@ class NeyrinckSoftware {
 }
 $NeyrinckSoftware = new NeyrinckSoftware;
 
+if(isset($_GET['show']))
+{
 if ($_GET['show'] == 'info') {
 	echo "<pre>";
 	echo "<h1>Product Associations</h1>";
@@ -107,5 +109,6 @@ if ($_GET['show'] == 'info') {
 
 	echo "<h1>iLok emails</h1>";
 	print_r($NeyrinckSoftware->iLok);
+}
 }
 ?>
