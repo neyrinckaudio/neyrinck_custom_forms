@@ -9,14 +9,14 @@ require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 
 
 function ostAPI($data){
-  // key = '2D055CF13150317F74C488582AA1AC17' // Live Site
+  // key = 'B72780CEE26C1CFF6210DBC4A6DBCCD0' // Live Site on Cloudways
+  // key = '2D055CF13150317F74C488582AA1AC17' // Old Live Site on AWS
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
   // key = '46CA9534B96BFFEA659C9169F7872CDD' //test.neyrinck.com
   $config = array(
       'url'=>'http://ost.neyrinck.com/api/http.php/tickets.json',
-      'key'=>'2D055CF13150317F74C488582AA1AC17'
+      'key'=>'B72780CEE26C1CFF6210DBC4A6DBCCD0'
     );
-
     #pre-checks
   function_exists('curl_version') or die('CURL support required');
   function_exists('json_encode') or die('JSON support required');
@@ -181,7 +181,6 @@ if ($_POST['submit'] == 'Send') {
     $headers = "From: Neyrinck<postmaster@neyrinck.com>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-    $headers .= "Bcc: berniceling@neyrinck.com\r\n";
     $headers .= "Reply-To: $email\r\n";
 
     $body = "<html><body> User Name : $firstname $lastname<br />Request Date : ".date("Y-m-d h:i:s A")."<br />E-Mail : <a href='mailto:$email'>$email</a><br />Product Name : $product<br />";
@@ -192,8 +191,11 @@ if ($_POST['submit'] == 'Send') {
 
     //echo $body;
 
-    mail($to,$subject,$body,$headers);
+    $mailresult = mail($to,$subject,$body,$headers);
     echo "<div class='success'>Your request has been sent. Thank you.</div>";
+    echo "<p>";
+    echo $mailresult;
+    echo "</p>";
 
   }
 }
