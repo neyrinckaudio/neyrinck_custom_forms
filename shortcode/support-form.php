@@ -14,7 +14,7 @@ function ostAPI($data){
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
   // key = '46CA9534B96BFFEA659C9169F7872CDD' //test.neyrinck.com
   $config = array(
-      'url'=>'http://ost.neyrinck.com/api/http.php/tickets.json',
+      'url'=>'https://ost.neyrinck.com/api/http.php/tickets.json',
       'key'=>'B72780CEE26C1CFF6210DBC4A6DBCCD0'
     );
     #pre-checks
@@ -102,6 +102,7 @@ if ($_POST['submit'] == 'Send') {
   $mac = $_POST['mac'];
   $win = $_POST['win'];
   $DAW = $_POST['DAW'];
+  $surf = $_POST['surface'];
 
   $email2 = $_POST['email2'];
   $email = $_POST['email'];
@@ -156,7 +157,10 @@ if ($_POST['submit'] == 'Send') {
     $product = $_POST['software'];
     $subject = $_POST['subject'];
     $email  = preg_replace('/\s+/', ' ', $email);
-    $msg = "DAW : $DAW \r\n";
+    $msg = "Product : $product \r\n";
+    $msg .= "DAW : $DAW \r\n";
+    $msg .= "Surface : $surf \r\n";
+    $system = "$os";
     $msg .= "OS : $os - $mac $win \r\n";
     $msg .= "$message";
 
@@ -166,7 +170,12 @@ if ($_POST['submit'] == 'Send') {
       'subject' => "$subject",
       'message' => "$msg",
       'ip' => $_SERVER['REMOTE_ADDR'],
-
+      'product' => "$product",
+      'daw' => "$DAW",
+      'system' => "$system",
+      'macos' => "$mac",
+      'windowsos' => "$win",
+      'surface' => "$surf",
     );
 
     $ticket_id = ostAPI($data);
@@ -272,26 +281,36 @@ if (!$_POST['submit'] || $errors > 0) {
 </td>
 </tr>
 
-<tr style='height: 3.5em;' id="DAW">
+
+   <tr style='height: 3.5em;' id="DAW">
 <td width="20%" style="vertical-align:middle">DAW: </td>
 <td width="80%">
   <div class="styled-select">
     <select name="DAW" >
       <option value="Pro Tools" select="selected">&nbsp; &#9662;  Pro Tools</option>
       <?php
-        $DAWS[] = "Audition";
-        $DAWS[] = "Cubase";
-        $DAWS[] = "Digital Performer";
-        $DAWS[] = "Final Cut Pro 7";
-        $DAWS[] = "Live";
         $DAWS[] = "Logic Pro";
-        $DAWS[] = "MIO Console";
+        $DAWS[] = "Cubase";
+        $DAWS[] = "Nuendo";
+        $DAWS[] = "Ardour";
+        $DAWS[] = "Audition";
+        $DAWS[] = "Digital Performer";
+        $DAWS[] = "FMod";
+        $DAWS[] = "Live";
+        $DAWS[] = "LUNA";
         $DAWS[] = "Media Composer";
+        $DAWS[] = "MIO Console";
+        $DAWS[] = "MixBus";
+        $DAWS[] = "Premiere";
         $DAWS[] = "Reaper";
         $DAWS[] = "Reason";
-        $DAWS[] = "Studio One";
+        $DAWS[] = "Resolve";
         $DAWS[] = "Sonar";
+        $DAWS[] = "Studio One";
         $DAWS[] = "Tracktion";
+        $DAWS[] = "Wwise";
+        $DAWS[] = "Other";
+
         foreach ($DAWS as $D) {
           echo "    <option value='$D'";
           if (html_entity_decode($_POST['DAW']) == $D) {
@@ -305,6 +324,36 @@ if (!$_POST['submit'] || $errors > 0) {
 </td>
 </tr>
 
+<tr style='height: 3.5em;'>
+<td width="20%" style="vertical-align:middle">Surface:</td>
+<td width="80%" id='os'>
+   <div class="styled-select">
+    <select name="surface" id="surface">
+       <option value="" select="selected">&nbsp; &#9662;  Select an option</option>
+       <?php
+        $Surface[] = "Command|8";
+        $Surface[] = "Control|24";
+        $Surface[] = "C|24";
+        $Surface[] = "D-Command";
+        $Surface[] = "Faderport V2";
+        $Surface[] = "iOStation 24c";
+        $Surface[] = "ProControl";
+        $Surface[] = "ProControl Edit Pack";
+        $Surface[] = "RAVEN";
+        $Surface[] = "V-Console";
+        $Surface[] = "V-Control Pro 1.9 For iPad";
+        foreach ($Surface as $D) {
+          echo "    <option value='$D'";
+          if (html_entity_decode($_POST['surface']) == $D) {
+          echo " selected='selected'";
+          }
+          echo ">$D</option>\n";
+        }
+       ?>
+    </select>
+   </div>
+</td>
+</tr>
 
 <tr style='height: 3.5em;'>
 <td width="20%" style="vertical-align:middle">System:</td>
@@ -341,13 +390,13 @@ if (!$_POST['submit'] || $errors > 0) {
       $macOS[] = "11 Big Sur";
       $macOS[] = "10.15 Catalina";
       $macOS[] = "10.14 Mojave";
-      $macOS[] = "10.13 high Sierra";
+      $macOS[] = "10.13 High Sierra";
       $macOS[] = "10.12 Sierra";
       $macOS[] = "10.11 El Capitan";
       $macOS[] = "10.10 Yosemite";
       $macOS[] = "10.9 Mavericks";
       $macOS[] = "10.8 Mountain Lion";
-        
+      $macOS[] = "Other";
 
         foreach ($macOS as $M) {
           echo "    <option value='$M'";
@@ -377,6 +426,7 @@ if (!$_POST['submit'] || $errors > 0) {
         $winOS[] = "Windows 7";
         $winOS[] = "Windows 8";
         $winOS[] = "Windows 10";
+        $winOS[] = "Windows 11";
 
         foreach ($winOS as $W) {
           echo "    <option value='$W'";
