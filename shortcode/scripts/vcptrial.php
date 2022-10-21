@@ -114,7 +114,8 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
             echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
-        echo "<script>ga('send', 'event', 'vcptrial', 'deposit', 'Trial License Deposit Success');</script>";
+            
+            echo "<script>gtag('event', 'deposit', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Success'});</script>";
         echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
         echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
@@ -127,7 +128,7 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
     {
         $errorMsg = $e->getMessage();
         echo "$errorMsg";
-        echo "<script>ga('send', 'event', 'vcptrial', 'submiterror', 'Trial License Deposit Error');</script>";
+        echo "<script>gtag('event', 'submiterror', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Error'});</script>";
         include_once('vcpTrialSubmitAccountForm.php');
         
     }
@@ -202,7 +203,8 @@ else if (isset($_POST['submitPlusAccountId']) && !empty($_POST['item_account_id'
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
             echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
-        echo "<script>ga('send', 'event', 'vcptrial', 'deposit', 'Trial License Deposit Success');</script>";
+            echo "<script>gtag('event', 'deposit', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Success'});</script>";
+            
         echo "A V-Control Pro Plus trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
         echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
@@ -215,7 +217,7 @@ else if (isset($_POST['submitPlusAccountId']) && !empty($_POST['item_account_id'
     {
         $errorMsg = $e->getMessage();
         echo "$errorMsg";
-        echo "<script>ga('send', 'event', 'vcptrial', 'submiterror', 'Trial License Deposit Error');</script>";
+        echo "<script>gtag('event', 'submiterror', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Error'});</script>";
         include_once('vcpTrialSubmitAccountForm.php');
         
     }
