@@ -1,8 +1,7 @@
 <?php
-class NeyrinckSoftware {
-
-	function NeyrinckSoftware() {
-
+class NeyrinckSoftware 
+{
+	function __construct() {
 		$connection = mysqli_connect($GLOBALS['ncf_server'], $GLOBALS['ncf_user'], $GLOBALS['ncf_password'], $GLOBALS['ncf_database'], 3306);
 
 
@@ -23,6 +22,7 @@ class NeyrinckSoftware {
 		// this controls which products show up in the drop down on which pages
 
 		$this->products['V-Control Pro'][] = 'V-Control Pro';
+		$this->products['V-Control Pro'][] = 'V-Control Pro - Logic Pro X 10.5 and earlier';
 
 		$this->products['V-Control'][] = 'Ney-Fi';
 
@@ -34,9 +34,9 @@ class NeyrinckSoftware {
 		$this->products['SC-Dolbly-E'][] = 'SoundCode for Dolby E Decoder - PT 10.3.7 and later';
 
 
-		$this->products['LtRt'][] = 'SoundCode Stereo LtRt';
-		$this->products['LtRt'][] = 'SoundCode LtRt Tools 2.0 - PT 10.3.4 or earlier';
 		$this->products['LtRt'][] = 'SoundCode LtRt Tools 2.1 - PT 10.3.5 or later';
+		$this->products['LtRt'][] = 'SoundCode LtRt Tools 2.0 - PT 10.3.4 or earlier';
+		$this->products['LtRt'][] = 'SoundCode Stereo LtRt - Legacy TDM';
 
 		$this->products['SC-Exchange'][] = 'SoundCode Exchange MXF-PT 10.3.4 or earlier';
 		$this->products['SC-Exchange'][] = 'SoundCode Exchange MXF Import-PT 10.3.4 or earlier';
@@ -44,8 +44,6 @@ class NeyrinckSoftware {
 		$this->products['SC-Exchange'][] = 'SoundCode Exchange MXF Import-PT 10.3.5 or later';
 
 		$this->products['V-Mon'][] = 'V-Mon';
-		$this->products['V-Mon'][] = 'V-Mon - AAX DSP 64/32';
-
 
 		$this->products['Dolbly-Digital'][] = 'SoundCode For Dolby Digital 2';
 
@@ -81,16 +79,11 @@ class NeyrinckSoftware {
 			foreach ($software as $index=>$name) {
 				$mac = "$name - MAC OS X";
 				$win = "$name - Windows";
-				$win_32 = "$name - 32-bit Windows";
-				$win_64 = "$name - 64-bit Windows";
-
+				
 				// Package list
 				$packages[$product][]= $mac;
-				if ($name != 'V-Control Pro') $packages[$product][]= $win;
-				else {
-					$packages[$product][]= $win_32;
-					$packages[$product][]= $win_64;
-				}
+				if ($name != 'V-Control Pro - Logic Pro X 10.5 and earlier') $packages[$product][]= $win;
+				
 			}
 		}
 
@@ -103,6 +96,8 @@ class NeyrinckSoftware {
 }
 $NeyrinckSoftware = new NeyrinckSoftware;
 
+if(isset($_GET['show']))
+{
 if ($_GET['show'] == 'info') {
 	echo "<pre>";
 	echo "<h1>Product Associations</h1>";
@@ -113,5 +108,6 @@ if ($_GET['show'] == 'info') {
 
 	echo "<h1>iLok emails</h1>";
 	print_r($NeyrinckSoftware->iLok);
+}
 }
 ?>

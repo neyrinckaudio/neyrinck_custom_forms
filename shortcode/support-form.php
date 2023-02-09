@@ -5,17 +5,18 @@
 error_reporting(0);
 
 // grab recaptcha library
-require_once "scripts/recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 
 
 function ostAPI($data){
-  // key = '2D055CF13150317F74C488582AA1AC17' // Live Site
+  // key = 'B72780CEE26C1CFF6210DBC4A6DBCCD0' // Live Site on Cloudways
+  // key = '2D055CF13150317F74C488582AA1AC17' // Old Live Site on AWS
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
+  // key = '46CA9534B96BFFEA659C9169F7872CDD' //test.neyrinck.com
   $config = array(
-      'url'=>'http://ost.neyrinck.com/api/http.php/tickets.json',
-      'key'=>'2D055CF13150317F74C488582AA1AC17'
+      'url'=>'https://ost.neyrinck.com/api/http.php/tickets.json',
+      'key'=>'B72780CEE26C1CFF6210DBC4A6DBCCD0'
     );
-
     #pre-checks
   function_exists('curl_version') or die('CURL support required');
   function_exists('json_encode') or die('JSON support required');
@@ -101,6 +102,7 @@ if ($_POST['submit'] == 'Send') {
   $mac = $_POST['mac'];
   $win = $_POST['win'];
   $DAW = $_POST['DAW'];
+  $surf = $_POST['surface'];
 
   $email2 = $_POST['email2'];
   $email = $_POST['email'];
@@ -155,7 +157,10 @@ if ($_POST['submit'] == 'Send') {
     $product = $_POST['software'];
     $subject = $_POST['subject'];
     $email  = preg_replace('/\s+/', ' ', $email);
-    $msg = "DAW : $DAW \r\n";
+    $msg = "Product : $product \r\n";
+    $msg .= "DAW : $DAW \r\n";
+    $msg .= "Surface : $surf \r\n";
+    $system = "$os";
     $msg .= "OS : $os - $mac $win \r\n";
     $msg .= "$message";
 
@@ -165,7 +170,12 @@ if ($_POST['submit'] == 'Send') {
       'subject' => "$subject",
       'message' => "$msg",
       'ip' => $_SERVER['REMOTE_ADDR'],
-
+      'product' => "$product",
+      'daw' => "$DAW",
+      'system' => "$system",
+      'macos' => "$mac",
+      'windowsos' => "$win",
+      'surface' => "$surf",
     );
 
     $ticket_id = ostAPI($data);
@@ -180,7 +190,6 @@ if ($_POST['submit'] == 'Send') {
     $headers = "From: Neyrinck<postmaster@neyrinck.com>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-    $headers .= "Bcc: berniceling@neyrinck.com\r\n";
     $headers .= "Reply-To: $email\r\n";
 
     $body = "<html><body> User Name : $firstname $lastname<br />Request Date : ".date("Y-m-d h:i:s A")."<br />E-Mail : <a href='mailto:$email'>$email</a><br />Product Name : $product<br />";
@@ -191,8 +200,11 @@ if ($_POST['submit'] == 'Send') {
 
     //echo $body;
 
-    mail($to,$subject,$body,$headers);
+    $mailresult = mail($to,$subject,$body,$headers);
     echo "<div class='success'>Your request has been sent. Thank you.</div>";
+    echo "<p>";
+    echo $mailresult;
+    echo "</p>";
 
   }
 }
@@ -247,17 +259,13 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="software"  class="product" value="<?php echo $_POST['software']; ?>">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
+        $products[] = 'V-Control Pro';
+        $products[] = 'SoundCode LtRt Tools';
         $products[] = 'Spill';
         $products[] = 'SoundCode For Dolby E Bundle';
         $products[] = 'SoundCode For Dolby E Encoder';
         $products[] = 'SoundCode For Dolby E Decoder';
-        $products[] = 'SoundCode Stereo LtRt';
-        $products[] = 'SoundCode LtRt Tools';
-        $products[] = 'SoundCode Exchange MXF Import';
-        $products[] = 'SoundCode Exchange MXF';
         $products[] = 'SoundCode For Dolby Digital';
-        $products[] = 'SoundCode For DTS';
-        $products[] = 'V-Control Pro';
         $products[] = 'V-Mon';
         $products[] = 'Other';
         foreach ($products as $prod) {
@@ -273,26 +281,36 @@ if (!$_POST['submit'] || $errors > 0) {
 </td>
 </tr>
 
-<tr style='height: 3.5em;' id="DAW">
+
+   <tr style='height: 3.5em;' id="DAW">
 <td width="20%" style="vertical-align:middle">DAW: </td>
 <td width="80%">
   <div class="styled-select">
     <select name="DAW" >
       <option value="Pro Tools" select="selected">&nbsp; &#9662;  Pro Tools</option>
       <?php
-        $DAWS[] = "Audition";
-        $DAWS[] = "Cubase";
-        $DAWS[] = "Digital Performer";
-        $DAWS[] = "Final Cut Pro 7";
-        $DAWS[] = "Live";
         $DAWS[] = "Logic Pro";
-        $DAWS[] = "MIO Console";
+        $DAWS[] = "Cubase";
+        $DAWS[] = "Nuendo";
+        $DAWS[] = "Ardour";
+        $DAWS[] = "Audition";
+        $DAWS[] = "Digital Performer";
+        $DAWS[] = "FMod";
+        $DAWS[] = "Live";
+        $DAWS[] = "LUNA";
         $DAWS[] = "Media Composer";
+        $DAWS[] = "MIO Console";
+        $DAWS[] = "MixBus";
+        $DAWS[] = "Premiere";
         $DAWS[] = "Reaper";
         $DAWS[] = "Reason";
-        $DAWS[] = "Studio One";
+        $DAWS[] = "Resolve";
         $DAWS[] = "Sonar";
+        $DAWS[] = "Studio One";
         $DAWS[] = "Tracktion";
+        $DAWS[] = "Wwise";
+        $DAWS[] = "Other";
+
         foreach ($DAWS as $D) {
           echo "    <option value='$D'";
           if (html_entity_decode($_POST['DAW']) == $D) {
@@ -306,6 +324,36 @@ if (!$_POST['submit'] || $errors > 0) {
 </td>
 </tr>
 
+<tr style='height: 3.5em;'>
+<td width="20%" style="vertical-align:middle">Surface:</td>
+<td width="80%" id='os'>
+   <div class="styled-select">
+    <select name="surface" id="surface">
+       <option value="" select="selected">&nbsp; &#9662;  Select an option</option>
+       <?php
+        $Surface[] = "Command|8";
+        $Surface[] = "Control|24";
+        $Surface[] = "C|24";
+        $Surface[] = "D-Command";
+        $Surface[] = "Faderport V2";
+        $Surface[] = "iOStation 24c";
+        $Surface[] = "ProControl";
+        $Surface[] = "ProControl Edit Pack";
+        $Surface[] = "RAVEN";
+        $Surface[] = "V-Console";
+        $Surface[] = "V-Control Pro 1.9 For iPad";
+        foreach ($Surface as $D) {
+          echo "    <option value='$D'";
+          if (html_entity_decode($_POST['surface']) == $D) {
+          echo " selected='selected'";
+          }
+          echo ">$D</option>\n";
+        }
+       ?>
+    </select>
+   </div>
+</td>
+</tr>
 
 <tr style='height: 3.5em;'>
 <td width="20%" style="vertical-align:middle">System:</td>
@@ -338,15 +386,17 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="mac" id="mac">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
-        $macOS[] = "10.4 Tiger";
-        $macOS[] = "10.5 Leopard";
-        $macOS[] = "10.6 Snow Leopard";
-        $macOS[] = "10.7 Lion";
-        $macOS[] = "10.8 Mountain Lion";
-        $macOS[] = "10.9 Mavericks";
-        $macOS[] = "10.10 Yosemite";
-        $macOS[] = "10.11 El Capitan";
-        $macOS[] = "10.12 Sierra";
+      $macOS[] = "12 Monterey";
+      $macOS[] = "11 Big Sur";
+      $macOS[] = "10.15 Catalina";
+      $macOS[] = "10.14 Mojave";
+      $macOS[] = "10.13 High Sierra";
+      $macOS[] = "10.12 Sierra";
+      $macOS[] = "10.11 El Capitan";
+      $macOS[] = "10.10 Yosemite";
+      $macOS[] = "10.9 Mavericks";
+      $macOS[] = "10.8 Mountain Lion";
+      $macOS[] = "Other";
 
         foreach ($macOS as $M) {
           echo "    <option value='$M'";
@@ -376,6 +426,7 @@ if (!$_POST['submit'] || $errors > 0) {
         $winOS[] = "Windows 7";
         $winOS[] = "Windows 8";
         $winOS[] = "Windows 10";
+        $winOS[] = "Windows 11";
 
         foreach ($winOS as $W) {
           echo "    <option value='$W'";

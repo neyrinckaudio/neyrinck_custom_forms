@@ -5,7 +5,7 @@
 // error_reporting(1);
 
 // grab recaptcha library
-require_once "scripts/recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 include('scripts/softwareInformation.php');
 
 

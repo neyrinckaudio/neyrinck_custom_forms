@@ -71,7 +71,7 @@ else if (isset($_POST['submitActivationRegistration']))
 {
     try 
     {
-        $ilok_user_id = $_POST['item_ilok_user_id'];
+        $ilok_user_id = strtolower($_POST['item_ilok_user_id']);
         $activation_code = $_POST['item_activation_code'];
         $first_name = $_POST['item_first_name'];
         $last_name = $_POST['item_last_name'];

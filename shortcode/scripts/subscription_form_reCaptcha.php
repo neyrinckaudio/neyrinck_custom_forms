@@ -6,7 +6,7 @@
 error_reporting(E_ALL);
 
 // grab recaptcha library
-require_once "recaptchalib.php";
+require_once plugin_dir_path( __FILE__ ) ."recaptchalib.php";
 $errors = [];
 $email = "";
 $email2 = "";
