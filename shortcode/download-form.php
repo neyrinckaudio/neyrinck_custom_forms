@@ -15,7 +15,7 @@ $lastname = '';
 $organization = '';
 $email = '';
 $country = '';
-$software = '';
+$softwarename = '';
 if (isset($_POST['submit']) && ($_POST['submit'] != ''))
 {
   // your secret key
@@ -51,8 +51,8 @@ if (isset($_POST['submit']) && ($_POST['submit'] != ''))
     $errors[]= "Please specify an Software download.";
     echo "<input type='hidden' id='submit_software_status' value='error'/>";
   } else {
-    $software = $_POST['software'];
-  }
+    $softwarename = $_POST['software'];
+    }
 
   // first name
   if ($_POST['firstname'] == '') {
@@ -109,7 +109,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] != ''))
 
     $query="INSERT INTO ekl_software_downloads
      (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
-      ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
+      ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$softwarename', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
 
     $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
 
@@ -153,7 +153,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] != ''))
     // for testing  echo "not subscribing<br>";
     }
     // Launch Download
-    $file = $NeyrinckSoftware->downloads[$software];
+    $file = $NeyrinckSoftware->downloads[$softwarename];
     /*
     if ($downloadProduct == "Spill")
     {
@@ -222,7 +222,7 @@ if (!isset($_POST['submit']) || count($errors) > 0)
     foreach ($softwarePacks as $prod) {
       echo "
       <option value='$prod'";
-    if ($software == $prod) {
+    if ($softwarename == $prod) {
       echo " selected";
     }
     echo ">$prod</option>\n";
