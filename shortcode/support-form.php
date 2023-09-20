@@ -9,7 +9,7 @@ require_once plugin_dir_path( __FILE__ ) ."scripts/recaptchalib.php";
 
 
 function ostAPI($data){
-  // key = 'B72780CEE26C1CFF6210DBC4A6DBCCD0' // Live Site on Cloudways
+  // key = 'B72780CEE26C1CFF6210DBC4A6DBCCD0' // OST on Siteground
   // key = '2D055CF13150317F74C488582AA1AC17' // Old Live Site on AWS
   // key = 'D05D6EBE50B71F4CC2CB5D1F824D12A2' // WordPress test site
   // key = '46CA9534B96BFFEA659C9169F7872CDD' //test.neyrinck.com
@@ -41,7 +41,7 @@ function ostAPI($data){
 
 
   if ($code != 201)
-   die('Unable to create ticket: '.$result);
+   die('Error. Please contact us directly at support@neyrinck.com. Unable to create ticket: '.$result);
 
   $ticket_id = (int) $result;
   return $ticket_id;
