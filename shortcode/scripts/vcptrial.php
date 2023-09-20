@@ -8,7 +8,7 @@ include_once( plugin_dir_path( __FILE__ ) . 'dbFunctions.php');
 include_once( plugin_dir_path( __FILE__ ) . '../../includes/class-neyrinck-custom-forms-eden.php');
 
 
-$vcpTrialGUID = "2A666090-6653-11E6-80BB-005056A204F3";
+$vcpTrialGUID = "CC54A710-4E89-11EE-94E1-00505692C25A";
 $vcpPlusTrialGUID = "FAD35810-E5C7-11EC-BF81-00505692C25A";
 //Use this site key in the HTML code your site serves to users
 //6LfduNcUAAAAAMCW0-tF_IDCz2gew_xTS1wYW2Mh
