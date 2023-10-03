@@ -97,6 +97,10 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             }
             $depositedDright = $licenses[0];
             $licenseRef = $depositedDright['drightGuid'];
+            echo "<script>gtag('event', 'vcp_trial_fail', {'product':'standard3','ilok_id':'".$ilok_user_id."'});</script>";
+
+            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3fail', 'value':'".$ilok_user_id."'});</script>";
+
             echo "The iLok system indicates your iLok account already has a trial license.<br>";
             echo "License Reference: $licenseRef<br>";
         }
@@ -114,8 +118,9 @@ if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
             echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
-            
-            echo "<script>gtag('event', 'deposit', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Success'});</script>";
+            echo "<script>gtag('event', 'vcp_trial', {'product': 'standard32','ilok_id':'".$ilok_user_id."'});</script>";
+            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3', 'value':'".$ilok_user_id."'});</script>";
+          
         echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
         echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
@@ -186,6 +191,8 @@ else if (isset($_POST['submitPlusAccountId']) && !empty($_POST['item_account_id'
             }
             $depositedDright = $licenses[0];
             $licenseRef = $depositedDright['drightGuid'];
+            echo "<script>gtag('event', 'vcp_trial_fail', {'product':'plus2fail','ilok_id':'".$ilok_user_id."'});</script>";
+            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'plus2fail', 'value':'".$ilok_user_id."'});</script>";
             echo "The iLok system indicates your iLok account already has a V-Control Pro Plus trial license.<br>";
             echo "License Reference: $licenseRef<br>";
         }
@@ -203,7 +210,8 @@ else if (isset($_POST['submitPlusAccountId']) && !empty($_POST['item_account_id'
             $depositedDright = $depositedDrights[0];
             $licenseRef = $depositedDright['drightGuid'];
             echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
-            echo "<script>gtag('event', 'deposit', {'event_category': 'vcptrial','event_label': 'Trial License Deposit Success'});</script>";
+            echo "<script>gtag('event', 'vcp_trial', {'product': 'plus2','ilok_id':'".$ilok_user_id."'});</script>";
+            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'plus2', 'value':'".$ilok_user_id."'});</script>";
             
         echo "A V-Control Pro Plus trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
         echo "License Reference: $licenseRef<br>";
