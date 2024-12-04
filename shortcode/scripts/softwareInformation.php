@@ -51,6 +51,8 @@ class NeyrinckSoftware
 
 		$this->products['Spill'][] = 'Spill';
 
+		$this->products['Symphonic'][] = 'V-90 Symphonic';
+
 		$this->products['S3 TEST'][] = 'S3 TEST';
 
 		$this->addInfo();
