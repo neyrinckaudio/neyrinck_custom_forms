@@ -153,6 +153,15 @@ if (isset($_POST['submit']) && ($_POST['submit'] != ''))
     // for testing  echo "not subscribing<br>";
     }
     // Launch Download
+    // if contains "V-90" add gtag
+    if (str_starts_with($softwarename, 'V-90 Symphonic')) {
+      echo "<!-- Event snippet for download V-90 symphonic conversion page -->
+      <script>
+        gtag('event', 'conversion', {'send_to': 'AW-817619326/ISVRCNGTi44ZEP7C74UD'});
+      </script>";
+
+  }
+
     $file = $NeyrinckSoftware->downloads[$softwarename];
     /*
     if ($downloadProduct == "Spill")
