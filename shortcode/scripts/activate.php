@@ -131,12 +131,19 @@ else if (isset($_POST['submitActivationRegistration']))
             $licenseRef = "error";
             
             if ($license_type == 'full')
-            { 
-                if (!$product_guid)
+            {
+                if ($sku_guid)
+                {
+                    $drightGuidArray = $eden->depositFullLicense($sku_guid, $ilok_user_id, $activation_code);
+                }
+                else if (!$product_guid)
                 {
                     throw new Exception("Product GUID not found. License deposit failed. Please contact support@neyrinck.com.");
                 }
-                $drightGuidArray = $eden->depositFullLicense($product_guid, $ilok_user_id, $activation_code);
+                else
+                {
+                    $drightGuidArray = $eden->depositFullLicense($product_guid, $ilok_user_id, $activation_code);
+                }
             }
             else if ($license_type == 'upgrade')
             {
