@@ -2,8 +2,8 @@
  /*
     Plugin Name: Neyrinck Custom Forms
     Description: This plug-in loads all Neyrinck custom forms.
-    Author: Bernice Ling
-    Version: 1.0
+    Author: Bernice Ling, Paul Neyrinck
+    Version: 2.0
  */
 
 
