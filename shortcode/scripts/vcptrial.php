@@ -109,7 +109,7 @@ function vcp_processTrialLicenseRequest($productGuid, $trialSkuGuid, $productNam
         
         if ($ilokIdTest != $ilok_user_id)
         {
-            throw new Exception($ilokIdTest);
+            throw new Exception("iLok User ID is not valid");
         }
         $info = $eden->findUserLicenseBySKU($productGuid, $ilok_user_id);
         if (isset($info['error']))
