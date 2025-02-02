@@ -26,10 +26,29 @@ private function doEden($functionName, $data)
 
 public function findUserByAccountId($accountId)
 {
-    $data = array("accountId" => $accountId, "accessKeyStr" => "FQKoGGpkMU9QTHpTcWRlODVsZXNOdUp1ZXc9PRwVAqUAFQIVApnzEETBWA55jdnuD6KGr2qW7IoAAA==");                                                                    
-    $result = $this->doEden('findUserByAccountId', $data);
-    $jsonResult = json_decode($result, TRUE);
-    return $jsonResult['accountId'];
+    $info = [];
+    if (method_exists('WPEdenRemote', 'findUserByAccountId')) {
+        $result = WPEdenRemote::findUserByAccountId($accountId);
+	    if (isset($result['httpcode']))
+        {
+            $info['httpcode'] = $result['httpcode'];
+            if ($result['httpcode'] === 200){
+                $jsonResult = json_decode($result['response'], TRUE);
+                $info['accountId'] = $jsonResult['accountId'];
+                return $info;
+            }
+            else{
+                $info['error'] = $result['response'];
+                return $info;
+            }
+        }
+        else{
+            $info['error'] = "findUserByAccountId did not execute";
+            return $info;
+		}
+   }
+   $info['error'] = "findUserByAccountId did not execute";
+   return $info;
 }
 
 public function depositFullLicense($product_guid, $accountId, $unique_order_id)
@@ -61,11 +80,59 @@ public function depositLicenseWithTerms($product_guid, $accountId, $unique_order
 
 public function findUserLicenseBySKU($sku, $accountId)
 {
-    $data = array("sku"=>$sku, "accountId" => $accountId, "accessKeyStr" => "FQKoGGpkMU9QTHpTcWRlODVsZXNOdUp1ZXc9PRwVAqUAFQIVApnzEETBWA55jdnuD6KGr2qW7IoAAA==");                                                                    
-    $result = $this->doEden('findUserLicenseBySku', $data);
-    $jsonResult = json_decode($result, TRUE);
-    return $jsonResult;
+    $info = [];
+    if (method_exists('WPEdenRemote', 'findUserLicenseBySKU'))
+    {       
+        $result = WPEdenRemote::findUserLicenseBySKU($accountId, $sku);
+        if (isset($result['httpcode']))
+        {
+            $info['httpcode'] = $result['httpcode'];
+            if ($result['httpcode'] === 200){
+                $jsonResult = json_decode($result['response'], TRUE);
+                $info['licenses'] = $jsonResult['licenses'];
+                return $info;
+            }
+            else {
+                $info['error'] = $result['response'];
+                return $info;
+            }
+        }
+        else{
+            $info['error'] = "findUserLicenseBySKU did not execute";
+            return $info;
+		}
+   }
+   $info['error'] = "findUserLicenseBySKU did not execute";
+   return $info;
 }
 
+public function depositSkus($sku_guids, $account_id, $order_id)
+{
+    $info = [];
+    if (method_exists('WPEdenRemote', 'depositSkus'))
+    {  
+        $result = WPEdenRemote::depositSkus( $sku_guids, $account_id, $order_id );
+        if (isset($result['httpcode']))
+        {
+            if ($result['httpcode'] === 200){
+                $response = json_decode($result['response'], true);
+                $info['depositReference'] = $response['depositReference'];
+                return $info;
+            }
+            else{
+                $info['error'] = $result['response'];
+                return $info;
+            }
+        }
+        else
+        {
+            $info['error'] = "depositSkus did not execute";
+            return $info;
+        }
+    }
+    $info['error'] = "function depositSkus not found";
+    return $info;
 }
+
+} // class 
 ?>

@@ -9,6 +9,7 @@ include_once( plugin_dir_path( __FILE__ ) . '../../includes/class-neyrinck-custo
 
 
 $vcpTrialGUID = "CC54A710-4E89-11EE-94E1-00505692C25A";
+$vcpStandarsProductGUID = "238293B0-3B95-11EE-B381-00505692C25A";
 $vcpPlusTrialGUID = "FAD35810-E5C7-11EC-BF81-00505692C25A";
 //Use this site key in the HTML code your site serves to users
 //6LfduNcUAAAAAMCW0-tF_IDCz2gew_xTS1wYW2Mh
@@ -46,87 +47,87 @@ function sendEmail($product_name, $first_name, $last_name, $email1, $activation_
 
 if (isset($_POST['submitAccountId']) && !empty($_POST['item_account_id']))
 {
-    if (isset($_POST['g-recaptcha-response'])) {
-        $captcha = $_POST['g-recaptcha-response'];
-    } else {
-        $captcha = false;
-    }
-    
-    if (!$captcha) {
-        echo "Google captcha3 not detected.<br>";
-        die();
-    } else {
-        $secret   = '6LfduNcUAAAAAMcvZOqItm0PLqH-x3yjMwEtdqXy';
-        $response = file_get_contents(
-            "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
-        );
-        // use json_decode to extract json response
-        $response = json_decode($response);
-    
-        if ($response->success === false) {
-            echo "<p>The Google captcha3 system has warned that your request might be from a malicious system. Please try again after a few minutes or contact us to help you, weekdays 9 AM to 5 PM PST. Email: support at neyrinck dot com. Facebook @neyrinckaudio.</p>";
-            die();
-        }
-    }
-    $score = $response->score;
-    //... The Captcha is valid you can continue with the rest of your code
-    //... Add code to filter access using $response . score
-    if ($response->success==true && $response->score < 0.1) {
-        
-        echo "Google captcha3 believes this is spam. score = $score<br>";
-        die();
-    }
-
     try 
     {
         $ilok_user_id = $_POST['item_account_id'];
         $eden = new Neyrinck_Custom_Forms_Eden();
         
-        $ilokIdTest = $eden->findUserByAccountId($ilok_user_id);
+        $info = $eden->findUserByAccountId($ilok_user_id);
+        if (isset($info['error']))
+        {
+            throw new Exception($info['error']);
+        }
+        $ilokIdTest = $info['accountId'];
+        
         if ($ilokIdTest != $ilok_user_id)
         {
-            throw new Exception("iLok User ID is not valid");
+            throw new Exception($ilokIdTest);
         }
-        $licenses = $eden->findUserLicenseBySKU($vcpTrialGUID, $ilok_user_id);
-        if (count($licenses) > 0)
+        $info = $eden->findUserLicenseBySKU($vcpStandarsProductGUID, $ilok_user_id);
+        if (isset($info['error']))
         {
-            foreach ($licenses as $iter69)
+            throw new Exception($info['error']);
+        }
+        $licenses =  $info['licenses'];
+        if (is_array($licenses))
+        {
+            $existingTrialLicenseRef = '';
+            foreach ($licenses as $license)
             {
-            //echo json_encode($iter69);
-            //echo "<br><br>";
+                //echo json_encode($license);
+                //echo "<br><br>";
+                if (isset($license['licenseType']))
+                {
+                    if ($license['licenseType'] === 'TRIAL')
+                    {
+                        $existingTrialLicenseRef = $license['licenseGuid'];
+                        //echo $existingTrialLicenseRef;
+                        //echo "<br><br>";
+                        break;
+                    }
+                }
             }
-            $depositedDright = $licenses[0];
-            $licenseRef = $depositedDright['drightGuid'];
-            echo "<script>gtag('event', 'vcp_trial_fail', {'product':'standard3','ilok_id':'".$ilok_user_id."'});</script>";
+            if (strlen($existingTrialLicenseRef) > 0)
+            {
+                /* removed to work on staging server
+                echo "<script>gtag('event', 'vcp_trial_fail', {'product':'standard3','ilok_id':'".$ilok_user_id."'});</script>";
 
-            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3fail', 'value':'".$ilok_user_id."'});</script>";
-
-            echo "The iLok system indicates your iLok account already has a trial license.<br>";
-            echo "License Reference: $licenseRef<br>";
-        }
-        else
-        {
-            $orderId = date('Y-m-d H:i:s') . "VCPTRIAL";
+                echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3fail', 'value':'".$ilok_user_id."'});</script>";
+                */
+                echo "The iLok system indicates your iLok account already has a trial license.<br>";
+                echo "License Reference: ".$existingTrialLicenseRef."<br>";
+            }
+            else 
+            {
+                
+                $orderId = date('Y-m-d H:i:s') . "VCPTRIAL";
+                $guids = [$vcpTrialGUID];
+                $info = $eden->depositSkus($guids, $ilok_user_id, $orderId);
+                if (isset($info['error']))
+                {
+                    throw new Exception($info['error']);
+                }
+                $licenseRef = $info['depositReference'];
+                
+                echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
+                echo "<script>gtag('event', 'vcp_trial', {'product': 'standard32','ilok_id':'".$ilok_user_id."'});</script>";
+                    echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3', 'value':'".$ilok_user_id."'});</script>";
+                
+                echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
+                echo "License Reference: $licenseRef<br>";
+                echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
+                
+                echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
+                //include_once('vcpTrialSubmitRegistrationForm.php');
+                
+            }
             
-            $drightGuidArray = $eden->depositFullLicense($vcpTrialGUID, $ilok_user_id, $orderId);
-            // $drightGuidArray is null if it failed
-            if ($drightGuidArray == null) {
-                throw new Exception("License deposit failed.");
+        }
+        else {
+            echo "A system error has occurred. Please contact support at neyrinck.com/help.<br>";
+            if (is_string($licenses)){
+                echo $licenses."<br>";
             }
-//            echo json_encode($drightGuidArray);
-            $depositedDrights = $drightGuidArray['depositedDrights'];
-            $depositedDright = $depositedDrights[0];
-            $licenseRef = $depositedDright['drightGuid'];
-            echo "<script>gtag('event', 'conversion', {'send_to': 'AW-817619326/-FpvCIrA_OYCEP7C74UD'});</script>";
-            echo "<script>gtag('event', 'vcp_trial', {'product': 'standard32','ilok_id':'".$ilok_user_id."'});</script>";
-            echo "<script>fbq('track', 'Lead', {'content_category':'vcptrial','content_name':'standard3', 'value':'".$ilok_user_id."'});</script>";
-          
-        echo "A trial license has been deposited to account $ilok_user_id. When you are ready to try V-Control Pro, launch iLok License Manager on your computer and activate the license.<br>";
-        echo "License Reference: $licenseRef<br>";
-        echo "You must activate the license to your computer or an iLok USB key using iLok License Manager. Please go to <a href='https://www.ilok.com' target='_blank'>iLok.com</a> for more information.<br>";
-        
-        echo "You can download the V-Control Pro installer <a href='https://neyrinck.com/downloads/v-control-pro'>here</a>.";
-        //include_once('vcpTrialSubmitRegistrationForm.php');
         }
     }
     catch  (Exception $e)
