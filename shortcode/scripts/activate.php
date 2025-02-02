@@ -105,12 +105,17 @@ else if (isset($_POST['submitActivationRegistration']))
         else
         {
             $eden = new Neyrinck_Custom_Forms_Eden();
-
-            $ilokIdTest = $eden->findUserByAccountId($ilok_user_id);
+            $info = $eden->findUserByAccountId($ilok_user_id);
+            if (isset($info['error']))
+            {
+                throw new Exception($info['error']);
+            }
+            $ilokIdTest = $info['accountId'];
             if ($ilokIdTest != $ilok_user_id)
             {
                 throw new Exception("iLok User ID is not valid");
             }
+            
             $result = getActivationInfo($_POST['item_activation_code']);
             if ($result['success'] != true)
             {
@@ -130,51 +135,21 @@ else if (isset($_POST['submitActivationRegistration']))
             $sku_guid = $result["sku_guid"];
             $licenseRef = "error";
             
-            if ($license_type == 'full')
+            if ($sku_guid && (strlen($sku_guid) > 0))
             {
-                if ($sku_guid)
+                $guids = [$sku_guid];
+                $info = $eden->depositSkus($guids, $ilok_user_id, $activation_code);
+                if (isset($info['error']))
                 {
-                    $drightGuidArray = $eden->depositFullLicense($sku_guid, $ilok_user_id, $activation_code);
+                    throw new Exception($info['error']);
                 }
-                else if (!$product_guid)
-                {
-                    throw new Exception("Product GUID not found. License deposit failed. Please contact support@neyrinck.com.");
-                }
-                else
-                {
-                    $drightGuidArray = $eden->depositFullLicense($product_guid, $ilok_user_id, $activation_code);
-                }
-            }
-            else if ($license_type == 'upgrade')
-            {
-                if (!$sku_guid)
-                {
-                    throw new Exception("SKU GUID not found. License deposit failed. Please contact support@neyrinck.com.");
-                }
-                $drightGuidArray = $eden->depositFullLicense($sku_guid, $ilok_user_id, $activation_code);
-               // $this->deposit_license_by_SKU($this->product_id, $this->iLok_id, $this->unique_order_id);
-            }
-            else if ($license_type == 'rental')
-            {
-                if (!$terms_guid)
-                {
-                    throw new Exception("Terms GUID not found. License deposit failed. Please contact support@neyrinck.com.");
-                }
-                $drightGuidArray = $eden->depositLicenseWithTerms($product_guid, $ilok_user_id, $activation_code, $terms_guid);
+                $licenseRef = $info['depositReference'];
             }
             else
             {
                 throw new Exception("error: License type not handled. Please contact support@neyrinck.com.");
             }
-            // $drightGuidArray is null if it failed
-            if (!$drightGuidArray)
-            {
-                throw new Exception("License deposit failed. Please try again or contact support@neyrinck.com.");
-            }
             
-            $depositedDrights = $drightGuidArray['depositedDrights'];
-            $depositedDright = $depositedDrights[0];
-            $licenseRef = $depositedDright['drightGuid'];
             updateLicenseRef($licenseRef, $activation_code);
             $result = getCustomer($email1);
             if ($result['success'] == false)
@@ -186,8 +161,9 @@ else if (isset($_POST['submitActivationRegistration']))
             $registration_id = addProductRegistration($product_id, $customers_id);
             updateActivationInfo($ilok_asset_id, $registration_id, $ilok_user_id);
             sendEmail($product_name, $first_name, $last_name, $email1, $activation_code, $ilok_user_id, $company, $licenseRef);
+            
             include_once('activationSuccess.php');
-            echo "<p>License Reference: $licenseRef</p>";
+            echo "<p>License Reference: ".$licenseRef."</p>";
         }
     }
     catch (Exception $e) {
