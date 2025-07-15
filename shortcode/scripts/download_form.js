@@ -3,7 +3,10 @@
  *  Works in conjunction with forms/download_forms.php
 **/
 
-var $ = jQuery;
+if (typeof $ === 'undefined')
+   var $ = jQuery;
+else
+   $ = jQuery;
 
 var el = document.getElementById('submit_status');
 if (el){
