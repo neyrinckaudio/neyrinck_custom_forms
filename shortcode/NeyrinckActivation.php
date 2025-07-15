@@ -14,7 +14,7 @@ class NeyrinckActivation {
           echo "Failed to connect to MySQL: " . mysqli_connect_error();
         } 
 
-        $query = "SELECT * FROM main.ilok_assets WHERE activation_code<>'' AND registration_id=0";
+        $query = "SELECT * FROM ilok_assets WHERE activation_code<>'' AND registration_id=0";
         $result = mysqli_query($query, $connection);
         if ($row = mysqli_fetch_array($result)) {
             print_r($row);
@@ -28,10 +28,13 @@ class NeyrinckActivation {
         {
           echo "Failed to connect to MySQL: " . mysqli_connect_error();
         } 
-        $query = "select ilok_license_code, ilok_user_id, registration_id, date_manufactured, frozen from main.ilok_assets where activation_code = '$activation_code'";
+        $query = "select ilok_license_code, ilok_user_id, registration_id, date_manufactured, frozen from ilok_assets where activation_code = '$activation_code'";
         $count_query = mysqli_query($connection, $query) or die("Couldnt execute query");
         $check = mysqli_fetch_array($count_query);
-        $date_manufactured = $check['date_manufactured'];
+        echo "<br>hello world query = ".$query."</br>";
+    echo "<br>hello world count_query = ".$count_query."</br>";
+    echo "<br>hello world check = ".$check."</br>";
+    $date_manufactured = $check['date_manufactured'];
 
         $result = array(
             "success" => true
@@ -86,7 +89,7 @@ class NeyrinckActivation {
         {
           echo "Failed to connect to MySQL: " . mysqli_connect_error();
         } 
-        $query = "SELECT ilok_asset_id, registration_id, ilok_product_id, ilok_user_id, ilok_license_code, date_manufactured FROM main.ilok_assets WHERE activation_code = '$activation_code'";
+        $query = "SELECT ilok_asset_id, registration_id, ilok_product_id, ilok_user_id, ilok_license_code, date_manufactured FROM ilok_assets WHERE activation_code = '$activation_code'";
         $asset_query = mysqli_query($connection, $query) or die("Couldnt execute query 1");
         $asset = mysqli_fetch_array($asset_query);
 
@@ -121,7 +124,7 @@ class NeyrinckActivation {
         $ilok_license_code = $asset["ilok_license_code"];
 
         // get product id
-        $query = "SELECT product_id, name FROM main.ilok_products WHERE ilok_product_id = '$ilok_product_id'";
+        $query = "SELECT product_id, name FROM ilok_products WHERE ilok_product_id = '$ilok_product_id'";
         $product_query = mysqli_query($connection, $query ) or die("Couldnt execute query 3");
         $ilok_product = mysqli_fetch_array($product_query);
         $product_id = $ilok_product["product_id"];
@@ -151,7 +154,7 @@ class NeyrinckActivation {
 
         // look for customer in database
         // check if e-mail is in database
-        $query = "SELECT customers_id, customers_lastname FROM main.customers WHERE customers_email_address = '$email1'";
+        $query = "SELECT customers_id, customers_lastname FROM customers WHERE customers_email_address = '$email1'";
         $cust_query = mysqli_query($connection, $query) or die("Couldnt execute query 2");
         $customer = mysqli_fetch_array($cust_query);
 
@@ -168,7 +171,7 @@ class NeyrinckActivation {
         }
 
         if ($update_names = '1'){
-            $sql = "UPDATE main.customers SET customers_firstname = '$first_name', customers_lastname = '$last_name', ilok_id = '$ilok_id' WHERE customers_email_address = '$email1'";
+            $sql = "UPDATE customers SET customers_firstname = '$first_name', customers_lastname = '$last_name', ilok_id = '$ilok_id' WHERE customers_email_address = '$email1'";
             $sql_result = mysqli_query($connection, $sql);
             if(!$sql_result){
                 $result["success"] = false;
@@ -178,7 +181,7 @@ class NeyrinckActivation {
         }
 
         if ($existing_user == '0') {
-            $sql = "INSERT INTO main.customers (customers_firstname, customers_lastname, customers_email_address, organization, ilok_id) VALUES ('$first_name', '$last_name', '$email1', '$company', '$ilok_id')";
+            $sql = "INSERT INTO customers (customers_firstname, customers_lastname, customers_email_address, organization, ilok_id) VALUES ('$first_name', '$last_name', '$email1', '$company', '$ilok_id')";
             $sql_result = mysqli_query($connection, $sql);
            
             if(!$sql_result){
@@ -188,7 +191,7 @@ class NeyrinckActivation {
             }
 
             // verify name was added
-            $sql = "SELECT customers_id FROM main.customers WHERE customers_email_address = '$email1'";
+            $sql = "SELECT customers_id FROM customers WHERE customers_email_address = '$email1'";
             $sql_result = mysqli_query($connection, $sql) or die("Couldnt execute query 2");
             $row = mysqli_fetch_array($sql_result);
 
@@ -214,13 +217,13 @@ class NeyrinckActivation {
         // look for default address book entry
         // add registration record
         $datetime = date('Y-m-d H:i:s');
-        $sql = "INSERT INTO main.products_registrations (product_id, customers_id, registration_type, registration_datetime) VALUES ('$product_id', '$customers_id', 'netauth', '$datetime')";
+        $sql = "INSERT INTO products_registrations (product_id, customers_id, registration_type, registration_datetime) VALUES ('$product_id', '$customers_id', 'netauth', '$datetime')";
         // echo "$sql\n";
         $sql_result = mysqli_query($connection, $sql ) or die("Error:  could not add product registration");
         $registration_id = mysqli_insert_id($connection);
     
         // modify iLok asset ID to have registration id
-        $sql = "UPDATE main.ilok_assets SET registration_id = '$registration_id', ilok_user_id = '$ilok_id' where ilok_asset_id = '$ilok_asset_id'";
+        $sql = "UPDATE ilok_assets SET registration_id = '$registration_id', ilok_user_id = '$ilok_id' where ilok_asset_id = '$ilok_asset_id'";
         //echo "$sql\n";
         $sql_result = mysqli_query($connection, $sql) or die("Error:  could not modify ilok asset");
 

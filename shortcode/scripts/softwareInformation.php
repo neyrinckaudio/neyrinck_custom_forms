@@ -10,7 +10,7 @@ class NeyrinckSoftware
 		            . $connection->connect_error);
 		}
 
-		$query = "SELECT * FROM main.software_downloads";
+		$query = "SELECT * FROM software_downloads";
 		$result = mysqli_query($connection, $query);
 		while ($row = mysqli_fetch_assoc($result) ) {
 			$this->records[] = $row;

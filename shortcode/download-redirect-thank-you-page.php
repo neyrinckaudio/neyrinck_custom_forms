@@ -109,7 +109,7 @@ if ($_POST['submit'] != '') {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
     } else echo "C O N N E C T E D ";
 
-    $query="INSERT INTO main.ekl_software_downloads
+    $query="INSERT INTO ekl_software_downloads
       (firstname, lastname, organization, email, software, country, downdate, newsletter) VALUES
       ('$firstname', '$lastname', '$organization', '".$_POST['email']."', '$software', '$country', '".date("Y-m-d h:i:s")."', '$newsletter')";
 
@@ -121,10 +121,10 @@ if ($_POST['submit'] != '') {
 
 
     // Update customer table if email is new
-    $query="SELECT * FROM main.customers WHERE customers_email_address ='".$email."'";
+    $query="SELECT * FROM customers WHERE customers_email_address ='".$email."'";
     $result = mysqli_query($connection, $query);
     if (mysqli_num_rows($result) == 0) {
-    $query="INSERT INTO main.customers (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
+    $query="INSERT INTO customers (customers_firstname, customers_lastname, customers_email_address, organization, customers_newsletter) VALUES ('$firstname', '$lastname', '$email', '$organization', '$newsletter')";
      $result = mysqli_query($connection, $query) or die ("Error in query: $query. ".mysqli_error());
 
       mysqli_close($connection);
