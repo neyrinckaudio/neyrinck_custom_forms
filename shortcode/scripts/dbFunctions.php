@@ -22,6 +22,7 @@ function getActivationInfo($activation_code)
     $connection = getConnection();
     if (!$connection)
     {
+        echo "<br>database connection failed</br>";
         $result["success"] = false;
         $result["msg"] = "Database Error: " . mysqli_connect_error();
         return $result;
