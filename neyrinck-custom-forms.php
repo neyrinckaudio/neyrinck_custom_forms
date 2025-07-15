@@ -30,7 +30,7 @@ function NCF_install() {
 
 	$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		db_user VARCHAR(10) NOT NULL,
+		db_user VARCHAR(20) NOT NULL,
       	db_password VARCHAR(100) NULL,
       	db_name VARCHAR(100) NULL,
       	db_server VARCHAR(100) NULL,
