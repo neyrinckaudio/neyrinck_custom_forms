@@ -14,3 +14,7 @@ removed hardcoded 'main.' database name usage
 
 7/15/2025
 changed username value to use 20 characters instead of 10
+
+4/12/2026
+changed username value to use 20 characters instead of 10updated OS list.
+updated product list

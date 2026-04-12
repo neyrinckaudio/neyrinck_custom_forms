@@ -331,16 +331,15 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="surface" id="surface">
        <option value="" select="selected">&nbsp; &#9662;  Select an option</option>
        <?php
-        $Surface[] = "Command|8";
         $Surface[] = "Control|24";
         $Surface[] = "C|24";
-        $Surface[] = "D-Command";
-        $Surface[] = "Faderport V2";
-        $Surface[] = "iOStation 24c";
+        $Surface[] = "D-Command / D-Control";
+        $Surface[] = "Faderport 8/16";
+        $Surface[] = "Faderport V2 / iOStation 24c";
+        $Surface[] = "Command|8";
         $Surface[] = "ProControl";
-        $Surface[] = "ProControl Edit Pack";
         $Surface[] = "RAVEN";
-        $Surface[] = "V-Console";
+        $Surface[] = "V-Console for iPad";
         $Surface[] = "V-Control Pro 1.9 For iPad";
         foreach ($Surface as $D) {
           echo "    <option value='$D'";
@@ -386,16 +385,13 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="mac" id="mac">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
+      $macOS[] = "26 Tahoe";
+      $macOS[] = "15 Sequoia";
+      $macOS[] = "14 Sonoma";
+      $macOS[] = "13 Ventura";
       $macOS[] = "12 Monterey";
       $macOS[] = "11 Big Sur";
       $macOS[] = "10.15 Catalina";
-      $macOS[] = "10.14 Mojave";
-      $macOS[] = "10.13 High Sierra";
-      $macOS[] = "10.12 Sierra";
-      $macOS[] = "10.11 El Capitan";
-      $macOS[] = "10.10 Yosemite";
-      $macOS[] = "10.9 Mavericks";
-      $macOS[] = "10.8 Mountain Lion";
       $macOS[] = "Other";
 
         foreach ($macOS as $M) {
@@ -421,12 +417,9 @@ if (!$_POST['submit'] || $errors > 0) {
     <select name="win" id="win">
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
-        $winOS[] = "XP";
-        $winOS[] = "Vista";
-        $winOS[] = "Windows 7";
-        $winOS[] = "Windows 8";
-        $winOS[] = "Windows 10";
         $winOS[] = "Windows 11";
+        $winOS[] = "Windows 10";
+        $winOS[] = "Other";
 
         foreach ($winOS as $W) {
           echo "    <option value='$W'";
