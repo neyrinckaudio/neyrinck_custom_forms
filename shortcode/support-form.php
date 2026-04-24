@@ -260,6 +260,7 @@ if (!$_POST['submit'] || $errors > 0) {
       <option value=''>&nbsp; &#9662;  Select an option</option>
       <?php
         $products[] = 'V-Control Pro';
+        $products[] = 'PT Peek';
         $products[] = 'SoundCode LtRt Tools';
         $products[] = 'Spill';
         $products[] = 'SoundCode For Dolby E Bundle';
